@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Simple Budget</string>
+
+    <string name="invitation_title">Send App Invitation</string>
+    <string name="invitation_message">Hi try this app.</string>
+    <string name="invitation_cta">Install!</string>
+    <string name="app_playstore_link">https://play.google.com/store/apps/details?id=com.google.android.apps.plus</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="settings">Settings</string>
+    <string name="share">Share</string>
+    <string name="app_icon">App icon</string>
+    <string name="title_activity_add_transaction">Add Transaction</string>
+    <string name="transaction">Transaction</string>
+    <string name="credit">Credit</string>
+    <string name="debit">Debit</string>
+    <string name="category">Category</string>
+    <string name="amount">Amount</string>
+    <string name="notes_if_any">Notes(if Any)</string>
+    <string name="save">Save</string>
+    <string name="available_balance">Available Balance</string>
+    <string name="seperator">seperator</string>
+    <string name="def_bal">00.00</string>
+    <string name="tagline">Easily manage you savings and budgets</string>
+    <string name="title_activity_tags">Tags</string>
+    <string name="home">Home</string>
+    <string name="tags">Tags</string>
+    <string name="search">Search</string>
+    <string name="title_activity_search">Search Activity</string>
+</resources>

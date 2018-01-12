@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "277864497556",
+    "firebase_url": "https://simplebudget-80a7c.firebaseio.com",
+    "project_id": "simplebudget-80a7c",
+    "storage_bucket": "simplebudget-80a7c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:277864497556:android:407bb4c9b67828de",
+        "android_client_info": {
+          "package_name": "me.pushkaranand.simplebudget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "277864497556-bdvofioapq7dbko8t2n722qor5cs5g31.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.pushkaranand.simplebudget",
+            "certificate_hash": "55e6e6236b244836661c40702d6224bcaa2feca7"
+          }
+        },
+        {
+          "client_id": "277864497556-418et7v1ehojv453brdlpeq72r6ndv89.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.pushkaranand.simplebudget",
+            "certificate_hash": "8ffcc4d2b388fb8105b3a94f30f01b631283ffcf"
+          }
+        },
+        {
+          "client_id": "277864497556-nvshbf557suu24te02glip803ousqgo4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5yDaLo7_m_3LCtvqtHJvoqhVCAqA8Fqs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "277864497556-nvshbf557suu24te02glip803ousqgo4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
