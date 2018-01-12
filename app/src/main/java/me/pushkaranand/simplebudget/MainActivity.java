@@ -11,20 +11,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -110,6 +110,9 @@ public class MainActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String selectedItemText = (String) adapterView.getItemAtPosition(position);
                 Toast.makeText(getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
+                Bundle b = new Bundle();
+                b.putString("Item", selectedItemText);
+                getLoaderManager().initLoader(1, b, MainActivity.this).forceLoad();
             }
 
             @Override
@@ -151,8 +154,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public Loader<List<Transactions>> onCreateLoader(int id, Bundle args) {
         Log.e("TEST", "Create Loader");
-        return new PrepareData(this);
-
+        if (args == null) {
+            Log.d("LoaderCreate: ", "Bundle is null");
+            return new PrepareData(this);
+        } else {
+            String s = args.getString("Item");
+            return new PrepareData(this, s);
+        }
     }
 
     @Override
@@ -229,7 +237,7 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_tags)
         {
-            Intent i = new Intent(this, Tags.class);
+            Intent i = new Intent(this, TagsActivity.class);
             startActivity(i);
 
         } else if (id == R.id.nav_settings)

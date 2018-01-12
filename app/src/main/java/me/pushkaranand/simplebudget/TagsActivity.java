@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,15 +19,16 @@ import android.widget.Toast;
 
 import com.google.android.gms.appinvite.AppInviteInvitation;
 
-public class SearchActivity extends AppCompatActivity
+public class TagsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final int REQUEST_INVITE = 0;
     private static final int ADD_TRANS = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_tags);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -36,8 +36,7 @@ public class SearchActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
             }
         });
 
@@ -64,7 +63,7 @@ public class SearchActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.search, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -85,33 +84,27 @@ public class SearchActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item)
-    {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home)
-        {
+        if (id == R.id.nav_home) {
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
-        } else if (id == R.id.nav_search)
-        {
+        } else if (id == R.id.nav_search) {
             Intent i = new Intent(this, SearchActivity.class);
             startActivity(i);
-        }
-        else if (id == R.id.nav_tags)
-        {
+
+        } else if (id == R.id.nav_tags) {
             Intent i = new Intent(this, TagsActivity.class);
             startActivity(i);
 
-        } else if (id == R.id.nav_settings)
-        {
+        } else if (id == R.id.nav_settings) {
             intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_share)
-        {
+        } else if (id == R.id.nav_share) {
             Intent i = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
                     .setMessage(getString(R.string.invitation_message))
                     .setDeepLink(Uri.parse(getString(R.string.app_playstore_link)))

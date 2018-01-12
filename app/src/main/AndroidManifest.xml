@@ -22,7 +22,7 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".NewTransaction" />
         <activity
-            android:name=".Tags"
+            android:name=".TagsActivity"
             android:label="@string/title_activity_tags"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
