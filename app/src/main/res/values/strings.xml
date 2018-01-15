@@ -30,4 +30,6 @@
     <string name="tags">Tags</string>
     <string name="search">Search</string>
     <string name="title_activity_search">Search Activity</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_view_transaction">ViewTransaction</string>
 </resources>

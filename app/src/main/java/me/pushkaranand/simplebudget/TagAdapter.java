@@ -13,7 +13,8 @@ import java.util.List;
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.RecycleHolder> {
     private List<Tags> TagList;
 
-    public void TagAdapter(List<Tags> list) {
+    TagAdapter(List<Tags> list)
+    {
         this.TagList = list;
     }
 

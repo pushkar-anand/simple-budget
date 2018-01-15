@@ -1,6 +1,9 @@
 package me.pushkaranand.simplebudget;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +17,13 @@ import java.util.List;
 public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapter.RecycleHolder>
 {
     private List<Transactions> TransactionList;
+    //private static RecyclerViewClickListener itemListener;
+    private Context context;
 
     class RecycleHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         TextView amount, date, notes, category;
+        ConstraintLayout constraintLayout;
 
         RecycleHolder(View view)
         {
@@ -26,22 +32,26 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
             date = (TextView) view.findViewById(R.id.datetxt);
             //notes = (TextView) view.findViewById(R.id.notesTxt);
             category = (TextView) view.findViewById(R.id.categoryTxt);
+            constraintLayout = view.findViewById(R.id.recycleConstraint);
         }
         @Override
         public void onClick(View view)
         {
+            //itemListener.recyclerViewListClicked(v, this.getPosition());
             int id = view.getId();
             Log.d("Clicked: ", "Clicked at "+String.valueOf(id));
         }
     }
 
-    public TransactionsAdapter(List<Transactions> TransactionList)
+    public TransactionsAdapter(Context context, List<Transactions> TransactionList)
     {
+        this.context = context;
         this.TransactionList = TransactionList;
     }
 
     @Override
-    public RecycleHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecycleHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.content_recycleview, parent, false);
 
@@ -52,6 +62,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
     public void onBindViewHolder(RecycleHolder holder, int position)
     {
         Transactions txn = TransactionList.get(position);
+        final Integer txn_id = txn.getTxn_id();
         holder.date.setText(txn.getTxn_date());
        // holder.notes.setText(txn.getTxn_notes());
         holder.category.setText(txn.getTxn_category());
@@ -67,7 +78,17 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
             holder.amount.setText(str);
             holder.itemView.setBackgroundColor(Color.RED);
         }
-
+        //holder.onClick(holder.itemView);
+        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                Log.d("REcyleClick: ", String.valueOf(txn_id));
+                Intent intent = new Intent(context, ViewTransaction.class);
+                intent.putExtra("TXN_ID", txn_id);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

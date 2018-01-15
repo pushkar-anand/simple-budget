@@ -70,9 +70,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
-            {
-                //Snackbar.make(view, "Add", Snackbar.LENGTH_LONG).show();
-                Intent intent = new Intent(MainActivity.this, NewTransaction.class);
+            {Intent intent = new Intent(MainActivity.this, NewTransaction.class);
                 startActivity(intent);
                 finish();
             }
@@ -127,7 +125,7 @@ public class MainActivity extends AppCompatActivity
 
         recyclerView = findViewById(R.id.TlistR);
         TList = new ArrayList<>();
-        transactionsAdapter = new TransactionsAdapter(TList);
+        transactionsAdapter = new TransactionsAdapter(this, TList);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -372,12 +370,16 @@ public class MainActivity extends AppCompatActivity
 
                 String txn_date, txn_category, txn_type, txn_notes;
                 Double txn_amount;
+                Integer txn_id;
 
+                txn_id = res.getInt(res.getColumnIndex(DatabaseHelper.COLUMN_NAME_ID));
                 txn_date = res.getString(res.getColumnIndex(DatabaseHelper.COLUMN_NAME_DATE));
                 txn_type = res.getString(res.getColumnIndex(DatabaseHelper.COLUMN_NAME_TYPE));
                 txn_amount = res.getDouble(res.getColumnIndex(DatabaseHelper.COLUMN_NAME_AMOUNT));
                 txn_category = res.getString(res.getColumnIndex(DatabaseHelper.COLUMN_NAME_CATEGORY));
                 txn_notes = res.getString(res.getColumnIndex(DatabaseHelper.COLUMN_NAME_NOTES));
+
+                txn = new Transactions(txn_id, txn_date, txn_category, txn_type, txn_notes, txn_amount);
 
                 String log = String.valueOf(id) + " " + txn_date + " " + txn_type + " " + String.valueOf(txn_amount);
 
@@ -390,36 +392,28 @@ public class MainActivity extends AppCompatActivity
                 }
                 if (listType == null || listType.equals("All"))
                 {
-                    txn = new Transactions(txn_date, txn_category, txn_type, txn_notes, txn_amount);
                     arrayList.add(txn);
                 }
                 else
                 {
                     if (listType.equals("Today") && isToday(txn_date))
                     {
-                        txn = new Transactions(txn_date, txn_category, txn_type, txn_notes, txn_amount);
                         arrayList.add(txn);
                     }
                     else if (listType.equals("Yesterday") && isYesterday(txn_date))
                     {
-                        txn = new Transactions(txn_date, txn_category, txn_type, txn_notes, txn_amount);
                         arrayList.add(txn);
                     }
                     else if(listType.equals("This Week") && isThisWeek(txn_date))
                     {
-                        txn = new Transactions(txn_date, txn_category, txn_type, txn_notes, txn_amount);
                         arrayList.add(txn);
                     }
                     else if(listType.equals("This Month") && isThisMonth(txn_date))
                     {
-                        txn = new Transactions(txn_date, txn_category, txn_type, txn_notes, txn_amount);
                         arrayList.add(txn);
                     }
-
-
                 }
             }
-            //MainActivity.updateBalance(String.valueOf(balance));
             Log.d("TaskLoader: ", "Returning");
 
             return new Pair<>(arrayList,balance);

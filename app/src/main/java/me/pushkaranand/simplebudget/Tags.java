@@ -25,7 +25,7 @@ class Tags
         this.tagLimit = tagLimit;
     }
 
-    public Tags(Integer tagId, String tagName, String tagColor, Double tagSpend, Double tagLimit)
+    Tags(Integer tagId, String tagName, String tagColor, Double tagSpend, Double tagLimit)
     {
         this.tagId = tagId;
         this.tagName = tagName;
@@ -35,7 +35,7 @@ class Tags
 
     }
 
-    public Tags(Integer tagId, String tagName, Double tagSpend, Double tagLimit)
+    Tags(Integer tagId, String tagName, Double tagSpend, Double tagLimit)
     {
         this.tagId = tagId;
         this.tagName = tagName;

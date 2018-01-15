@@ -3,11 +3,13 @@ package me.pushkaranand.simplebudget;
 
 class Transactions
 {
+    private Integer txn_id;
     private String txn_date, txn_category, txn_type, txn_notes;
     private Double txn_amount;
 
-    Transactions(String txn_date, String txn_category, String txn_type, String txn_notes, Double txn_amount)
+    Transactions(Integer txn_id,String txn_date, String txn_category, String txn_type, String txn_notes, Double txn_amount)
     {
+        this.txn_id = txn_id;
         this.txn_date = txn_date;
         this.txn_category = txn_category;
         this.txn_type = txn_type;
@@ -46,6 +48,14 @@ class Transactions
 
     public void setTxn_notes(String txn_notes) {
         this.txn_notes = txn_notes;
+    }
+
+    public Integer getTxn_id() {
+        return txn_id;
+    }
+
+    public void setTxn_id(Integer txn_id) {
+        this.txn_id = txn_id;
     }
 
     public Double getTxn_amount() {

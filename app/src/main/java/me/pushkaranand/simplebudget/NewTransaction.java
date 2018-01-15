@@ -77,7 +77,7 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
         month = calendar.get(Calendar.MONTH)+1;
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        categories = new String[]{"Tag","Food","Stationary","Misc."};
+        categories = new String[]{"Tag"};
         ArrayList<String> lst = new ArrayList<String>(Arrays.asList(categories));
         getLoaderManager().initLoader(TAGS_LOADER, null, this).forceLoad();
 
@@ -195,7 +195,6 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
                 {
                     s.add(d.getTagName());
                 }
-                SpinAdapter.clear();
                 SpinAdapter.addAll(s);
                 SpinAdapter.notifyDataSetChanged();
             }

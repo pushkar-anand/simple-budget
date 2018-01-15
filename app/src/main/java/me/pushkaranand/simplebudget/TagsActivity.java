@@ -1,6 +1,10 @@
 package me.pushkaranand.simplebudget;
 
+import android.app.AlertDialog;
+import android.app.LoaderManager;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,20 +14,38 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.appinvite.AppInviteInvitation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TagsActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks {
     private static final int REQUEST_INVITE = 0;
     private static final int ADD_TRANS = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    RecyclerView recyclerView;
+    TagAdapter tagAdapter;
+
+    List<Tags> tagsList;
+    private static final int TAGS_LOADER = 2;
+
+    DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +54,55 @@ public class TagsActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        databaseHelper = DatabaseHelper.getInstance(this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        fab.setOnClickListener(new View.OnClickListener()
+                               {
+                                   @Override
+                                   public void onClick(View view)
+                                   {
+                                       LayoutInflater li = LayoutInflater.from(TagsActivity.this);
+                                       View prompt = li.inflate(R.layout.new_tag_dialog, null);
 
-            }
-        });
+                                       final EditText n = prompt.findViewById(R.id.tagNameEdt);
+                                       final EditText l = prompt.findViewById(R.id.tagLimitEdt);
+
+                                       AlertDialog.Builder builder = new AlertDialog.Builder(TagsActivity.this);
+                                       builder.setView(prompt);
+
+                                       builder.setCancelable(false)
+                                               .setPositiveButton("Save", new DialogInterface.OnClickListener()
+                                               {
+                                                   @Override
+                                                   public void onClick(DialogInterface dialogInterface, int i)
+                                                   {
+                                                       if(TextUtils.isEmpty(n.getText()) || TextUtils.isEmpty(l.getText()))
+                                                       {
+                                                           Toast.makeText(TagsActivity.this, "Input name and limit", Toast.LENGTH_SHORT).show();
+                                                       }
+                                                       else
+                                                       {
+                                                           databaseHelper.newTag(n.getText().toString(),0.0,Double.valueOf(l.getText().toString()));
+                                                       }
+
+                                                   }
+                                               })
+                                               .setNegativeButton("Cancel", new
+                                                       DialogInterface.OnClickListener()
+                                                       {
+                                                           @Override
+                                                           public void onClick(DialogInterface dialogInterface, int i)
+                                                           {
+                                                               dialogInterface.cancel();
+                                                           }
+                                                       }
+                                               );
+                                       AlertDialog alertDialog = builder.create();
+
+                                       alertDialog.show();
+                                   }
+                               });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -48,6 +112,18 @@ public class TagsActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        recyclerView = findViewById(R.id.rlTagView);
+        tagsList = new ArrayList<>();
+        tagAdapter = new TagAdapter(tagsList);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(tagAdapter);
+
+        getLoaderManager().initLoader(TAGS_LOADER, null, this).forceLoad();
     }
 
     @Override
@@ -81,6 +157,36 @@ public class TagsActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args)
+    {
+
+        if(id == TAGS_LOADER)
+        {
+            return new TagLoader(this);
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Object o)
+    {
+        int id = loader.getId();
+        if(id == TAGS_LOADER)
+        {
+            tagsList = (List<Tags>) o;
+            tagAdapter.updateTagAdapter(tagsList);
+            tagAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader)
+    {
+        //setListAdapter(null);
+    }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
