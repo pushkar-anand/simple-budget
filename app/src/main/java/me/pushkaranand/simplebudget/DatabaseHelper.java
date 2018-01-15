@@ -61,8 +61,8 @@ class DatabaseHelper extends SQLiteOpenHelper
         String createQuery = "CREATE TABLE IF NOT EXISTS "+TABLE_NAME
                 +"("
                 +COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + TAG_COLUMN_NAME_NAME + " TEXT  NOT NULL, "
-                + TAG_COLUMN_NAME_SPEND + " REAL  NOT NULL, "
+                +COLUMN_NAME_TYPE + " TEXT  NOT NULL, "
+                +COLUMN_NAME_AMOUNT + " REAL  NOT NULL, "
                 +COLUMN_NAME_CATEGORY +" TEXT  NOT NULL, "
                 +COLUMN_NAME_DATE +" TEXT  NOT NULL, "
                 +COLUMN_NAME_YEAR +" INT  NOT NULL, "
@@ -78,8 +78,8 @@ class DatabaseHelper extends SQLiteOpenHelper
         createQuery = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME_TAG
                 + "("
                 + TAG_COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_NAME_TYPE + " TEXT  NOT NULL, "
-                + COLUMN_NAME_AMOUNT + " REAL  NOT NULL, "
+                + TAG_COLUMN_NAME_NAME + " TEXT  NOT NULL, "
+                + TAG_COLUMN_NAME_SPEND + " REAL  NOT NULL, "
                 + TAG_COLUMN_NAME_LIMIT + " REAL"
                 + ")"
         ;

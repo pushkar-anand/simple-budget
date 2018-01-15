@@ -4,7 +4,7 @@
     <string name="invitation_title">Send App Invitation</string>
     <string name="invitation_message">Hi try this app.</string>
     <string name="invitation_cta">Install!</string>
-    <string name="app_playstore_link">https://play.google.com/store/apps/details?id=com.google.android.apps.plus</string>
+    <string name="app_playstore_link">https://play.google.com/store/apps/details?id=me.pushkaranand.simplebudget</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

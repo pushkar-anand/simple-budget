@@ -22,6 +22,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,12 +40,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<List<Transactions>> {
+        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks {
     public static final String PREF = "simple-budget";
     private static final int REQUEST_INVITE = 0;
     private static final int ADD_TRANS = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
-    static TextView blncView;
+    TextView blncView;
     SharedPreferences sharedPreferences;
     Double availableBalance = 00.00;
     RecyclerView recyclerView;
@@ -53,13 +54,12 @@ public class MainActivity extends AppCompatActivity
     String[] spinData;
     private TransactionsAdapter transactionsAdapter;
 
-    public static void updateBalance(String s) {
-
-        blncView.setText(s);
-    }
+    private static final int TRANSACTIONS_LOADER = 1;
+    private static final int TAGS_LOADER = 2;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -88,10 +88,12 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         sharedPreferences = this.getSharedPreferences(PREF, Context.MODE_PRIVATE);
-        if (sharedPreferences.getBoolean("FIRST_RUN", true)) {
+        if (sharedPreferences.getBoolean("FIRST_RUN", true))
+        {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("FIRST_RUN", false);
             editor.apply();
+            createDefaultTags();
         }
 
         databaseHelper = DatabaseHelper.getInstance(this);
@@ -134,9 +136,30 @@ public class MainActivity extends AppCompatActivity
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(transactionsAdapter);
 
-        getLoaderManager().initLoader(0, null, this).forceLoad();
+        getLoaderManager().initLoader(TRANSACTIONS_LOADER, null, this).forceLoad();
 
         //new PrepareData(this);
+    }
+
+    public void createDefaultTags()
+    {
+        DatabaseHelper db = DatabaseHelper.getInstance(this);
+
+        db.newTag("Food and Dining",0.0,-1.0);
+        db.newTag("Entertainment",0.0,-1.0);
+        db.newTag("Transportation",0.0,-1.0);
+        db.newTag("Stationary",0.0,-1.0);
+        db.newTag("Rations",0.0,-1.0);
+        db.newTag("Shopping",0.0,-1.0);
+        db.newTag("Bills and Utilities",0.0,-1.0);
+        db.newTag("Gifts and Donation",0.0,-1.0);
+        db.newTag("Health and Fitness",0.0,-1.0);
+        db.newTag("Personal",0.0,-1.0);
+    }
+    public void updateBalance(String s)
+    {
+
+        blncView.setText(s);
     }
 
     @Override
@@ -152,37 +175,61 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public Loader<List<Transactions>> onCreateLoader(int id, Bundle args) {
-        Log.e("TEST", "Create Loader");
-        if (args == null) {
-            Log.d("LoaderCreate: ", "Bundle is null");
-            return new PrepareData(this);
-        } else {
-            String s = args.getString("Item");
-            return new PrepareData(this, s);
+    public Loader onCreateLoader(int id, Bundle args)
+    {
+        if (id == TRANSACTIONS_LOADER)
+        {
+            Log.e("TEST", "Create Loader");
+            if (args == null) {
+                Log.d("LoaderCreate: ", "Bundle is null");
+                return new PrepareData(this);
+            } else {
+                String s = args.getString("Item");
+                return new PrepareData(this, s);
+            }
+        }
+        if(id == TAGS_LOADER)
+        {
+            return new TagLoader(this);
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Object o)
+    {
+        int id = loader.getId();
+        if(id == TRANSACTIONS_LOADER)
+        {
+            Pair<ArrayList<Transactions>, Double> data = (Pair<ArrayList<Transactions>, Double>) o;
+
+            Log.d("LOADER", " LoadFinished");
+
+            if (data != null && !data.first.isEmpty()) {
+                TList = data.first;
+                Log.i("LOADER_DATA", TList.get(0).getTxn_type());
+
+                //List<Transactions> f = new ArrayList<>();
+                //recyclerView.setAdapter(new TransactionsAdapter(f));
+                transactionsAdapter.updateData(TList);
+                transactionsAdapter.notifyDataSetChanged();
+                updateBalance(String.valueOf(data.second));
+                //setListAdapter(new PrepareData(this, data));
+
+            } else {
+                Log.e("LOADER_DATA ", "NULL OR EMPTY");
+            }
+        }
+        if(id == TAGS_LOADER)
+        {
+
+            //
         }
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Transactions>> loader, List<Transactions> data) {
-        Log.d("LOADER", " LoadFinished");
-
-        if (data != null && !data.isEmpty()) {
-            TList = data;
-            Log.i("LOADER_DATA", TList.get(0).getTxn_type());
-
-            //List<Transactions> f = new ArrayList<>();
-            //recyclerView.setAdapter(new TransactionsAdapter(f));
-            transactionsAdapter.updateData(TList);
-            transactionsAdapter.notifyDataSetChanged();
-            //setListAdapter(new PrepareData(this, data));
-        } else {
-            Log.e("LOADER_DATA ", "NULL OR EMPTY");
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Transactions>> loader) {
+    public void onLoaderReset(Loader loader)
+    {
         //setListAdapter(null);
     }
 
@@ -291,7 +338,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private static class PrepareData extends AsyncTaskLoader<List<Transactions>> {
+    private static class PrepareData extends AsyncTaskLoader<Pair<ArrayList<Transactions>, Double>> {
         ArrayList<Integer> ids;
         Cursor res;
         Transactions txn;
@@ -307,7 +354,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public List<Transactions> loadInBackground() {
+        public Pair<ArrayList<Transactions>, Double> loadInBackground()
+        {
             //super.loadInBackground();
             Double balance = 0.0;
             ArrayList<Transactions> arrayList = new ArrayList<>();
@@ -371,9 +419,10 @@ public class MainActivity extends AppCompatActivity
 
                 }
             }
-            updateBalance(String.valueOf(balance));
+            //MainActivity.updateBalance(String.valueOf(balance));
             Log.d("TaskLoader: ", "Returning");
-            return arrayList;
+
+            return new Pair<>(arrayList,balance);
         }
 
         private boolean isToday(String d) {
@@ -427,7 +476,6 @@ public class MainActivity extends AppCompatActivity
 
             return String.valueOf(month).equals(s[1]);
         }
-
         protected void onReleaseResources() {
             res.close();
         }

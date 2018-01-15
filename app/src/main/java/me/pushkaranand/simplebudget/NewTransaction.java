@@ -2,11 +2,15 @@ package me.pushkaranand.simplebudget;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,12 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("deprecation")
-public class NewTransaction extends AppCompatActivity
+public class NewTransaction extends AppCompatActivity implements LoaderManager.LoaderCallbacks
 {
     private DatabaseHelper databaseHelper;
     RadioGroup crDr;
@@ -36,6 +43,9 @@ public class NewTransaction extends AppCompatActivity
     Button dateBtn, saveBtn;
     private int year, month, day;
     String catg; int pos;
+    ArrayAdapter<String> SpinAdapter;
+
+    private static final int TAGS_LOADER = 2;
 
     String[] categories = new String[4];
 
@@ -68,8 +78,10 @@ public class NewTransaction extends AppCompatActivity
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
         categories = new String[]{"Tag","Food","Stationary","Misc."};
+        ArrayList<String> lst = new ArrayList<String>(Arrays.asList(categories));
+        getLoaderManager().initLoader(TAGS_LOADER, null, this).forceLoad();
 
-        ArrayAdapter<String> SpinAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item,categories)
+        SpinAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item,lst)
         {
             @Override
             public boolean isEnabled(int position)
@@ -94,13 +106,15 @@ public class NewTransaction extends AppCompatActivity
                 return view;
             }
         };
+        SpinAdapter.setNotifyOnChange(true);
 
         SpinAdapter.setDropDownViewResource(R.layout.spinner_item);
         catSpin.setAdapter(SpinAdapter);
 
         catSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
                 // If user change the default selection
                 // First item is disable and it is used for hint
@@ -152,6 +166,46 @@ public class NewTransaction extends AppCompatActivity
                     myDateListener, year, month-1, day);
         }
         return null;
+    }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args)
+    {
+        if(id == TAGS_LOADER)
+        {
+            return new TagLoader(this);
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Object o)
+    {
+        List<Tags> data;
+        List<String> s = new ArrayList<>();
+        int id = loader.getId();
+        if(id == TAGS_LOADER)
+        {
+            if(o != null)
+            {
+                Log.d("TAG_LOADER", "Loader finished updating spinner.");
+                data = (List<Tags>) o;
+                s.add("Tags");
+                for (Tags d:  data)
+                {
+                    s.add(d.getTagName());
+                }
+                SpinAdapter.clear();
+                SpinAdapter.addAll(s);
+                SpinAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader)
+    {
+        //setListAdapter(null);
     }
 
     public void SaveTransaction(View view)

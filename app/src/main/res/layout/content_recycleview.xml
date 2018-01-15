@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:text="Food"
         android:textColorLink="@android:color/holo_blue_dark"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
