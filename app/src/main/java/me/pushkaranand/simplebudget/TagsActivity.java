@@ -38,13 +38,10 @@ public class TagsActivity extends AppCompatActivity
     private static final int REQUEST_INVITE = 0;
     private static final int ADD_TRANS = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
-
+    private static final int TAGS_LOADER = 2;
     RecyclerView recyclerView;
     TagAdapter tagAdapter;
-
     List<Tags> tagsList;
-    private static final int TAGS_LOADER = 2;
-
     DatabaseHelper databaseHelper;
 
     @Override
@@ -83,6 +80,9 @@ public class TagsActivity extends AppCompatActivity
                                                        else
                                                        {
                                                            databaseHelper.newTag(n.getText().toString(),0.0,Double.valueOf(l.getText().toString()));
+                                                           dialogInterface.dismiss();
+                                                           recreate();
+                                                           //getLoaderManager().restartLoader(TAGS_LOADER,null,TagsActivity.this);
                                                        }
 
                                                    }

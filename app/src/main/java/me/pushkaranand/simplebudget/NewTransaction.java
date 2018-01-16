@@ -6,11 +6,10 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,19 +34,29 @@ import java.util.Locale;
 @SuppressWarnings("deprecation")
 public class NewTransaction extends AppCompatActivity implements LoaderManager.LoaderCallbacks
 {
-    private DatabaseHelper databaseHelper;
+    private static final int TAGS_LOADER = 2;
     RadioGroup crDr;
     RadioButton cr, dr;
     EditText amount, notes;
     Spinner catSpin;
     Button dateBtn, saveBtn;
-    private int year, month, day;
-    String catg; int pos;
+    String catg;
+    int pos;
     ArrayAdapter<String> SpinAdapter;
-
-    private static final int TAGS_LOADER = 2;
-
     String[] categories = new String[4];
+    private DatabaseHelper databaseHelper;
+    private int year, month, day;
+    private DatePickerDialog.OnDateSetListener myDateListener = new
+            DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker arg0,
+                                      int arg1, int arg2, int arg3) {
+                    // arg1 = year
+                    // arg2 = month
+                    // arg3 = day
+                    showDate(arg1, arg2 + 1, arg3);
+                }
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -124,6 +133,7 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
                     // Notify the selected item text
                     Toast.makeText(getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
                     catg = selectedItemText;
+
                 }
             }
 
@@ -136,20 +146,6 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
 
 
     }
-
-    private DatePickerDialog.OnDateSetListener myDateListener = new
-            DatePickerDialog.OnDateSetListener()
-            {
-                @Override
-                public void onDateSet(DatePicker arg0,
-                                      int arg1, int arg2, int arg3)
-                {
-                    // arg1 = year
-                    // arg2 = month
-                    // arg3 = day
-                    showDate(arg1, arg2+1, arg3);
-                }
-            };
 
     public void setDate(View v)
     {
@@ -190,7 +186,6 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
             {
                 Log.d("TAG_LOADER", "Loader finished updating spinner.");
                 data = (List<Tags>) o;
-                s.add("Tags");
                 for (Tags d:  data)
                 {
                     s.add(d.getTagName());
@@ -234,8 +229,9 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
                 if(pos>0)
                 {
                     String txn_category = catg;
+                    Integer id = pos;
 
-                    if(databaseHelper.newTransaction(txn_type,txn_amount,txn_category,txn_date,txn_year,txn_month,txn_notes))
+                    if (databaseHelper.newTransaction(txn_type, txn_amount, txn_category, txn_date, txn_year, txn_month, txn_notes, id))
                     {
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);
