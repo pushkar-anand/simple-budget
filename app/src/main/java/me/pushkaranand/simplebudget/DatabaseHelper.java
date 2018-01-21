@@ -14,8 +14,8 @@ import java.util.Objects;
 
 
 class DatabaseHelper extends SQLiteOpenHelper {
+    static final String DATABASE_NAME = "simple-budget.db";
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "simple-budget.db";
     private static final String TABLE_NAME = "transactions";
     private static final String TABLE_NAME_TAG = "tags";
     private static final String NAME_PREFIX = "transaction_";

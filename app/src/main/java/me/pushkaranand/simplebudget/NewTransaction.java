@@ -23,6 +23,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +61,8 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
                 }
             };
 
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -75,6 +80,14 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
 
         dateBtn = findViewById(R.id.dateButton);
         saveBtn = findViewById(R.id.saveTrans);
+
+        //MobileAds.initialize(this, getResources().getString(R.string.ad_id));
+
+        mAdView = findViewById(R.id.adViewTrans);
+        AdRequest adRequest = new AdRequest.Builder()
+                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mAdView.loadAd(adRequest);
 
         String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         String dateBtnTxt = "Date: "+date;
@@ -107,10 +120,6 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
                 {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
-                }
-                else
-                {
-                    tv.setTextColor(Color.BLACK);
                 }
                 return view;
             }

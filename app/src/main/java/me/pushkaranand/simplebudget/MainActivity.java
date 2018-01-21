@@ -32,7 +32,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,10 +45,13 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks {
+
     public static final String PREF = "simple-budget";
     private static final int REQUEST_INVITE = 0;
     private static final int ADD_TRANS = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int TRANSACTIONS_LOADER = 1;
+    private static final int TAGS_LOADER = 2;
     TextView blncView;
     SharedPreferences sharedPreferences;
     Double availableBalance = 00.00;
@@ -53,9 +60,7 @@ public class MainActivity extends AppCompatActivity
     DatabaseHelper databaseHelper;
     String[] spinData;
     private TransactionsAdapter transactionsAdapter;
-
-    private static final int TRANSACTIONS_LOADER = 1;
-    private static final int TAGS_LOADER = 2;
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,12 +74,17 @@ public class MainActivity extends AppCompatActivity
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {Intent intent = new Intent(MainActivity.this, NewTransaction.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, NewTransaction.class);
                 startActivity(intent);
                 finish();
             }
         });
+
+        mAdView = findViewById(R.id.adViewMain);
+        AdRequest adRequest = new AdRequest.Builder()
+                .build();
+        mAdView.loadAd(adRequest);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -102,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         spinData = new String[]{"All", "Today", "Yesterday", "This Week", "This Month"};
 
         Spinner selectorSpinner = findViewById(R.id.selectorSpinner);
-        ArrayAdapter<String> selectorAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, spinData);
+        ArrayAdapter<String> selectorAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, spinData);
         selectorSpinner.setAdapter(selectorAdapter);
 
         selectorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -154,6 +164,7 @@ public class MainActivity extends AppCompatActivity
         db.newTag("Health and Fitness",0.0,-1.0);
         db.newTag("Personal",0.0,-1.0);
     }
+
     public void updateBalance(String s)
     {
 
@@ -258,6 +269,15 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_about) {
+            new LibsBuilder()
+                    //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
+                    .withActivityStyle(Libs.ActivityStyle.DARK)
+                    //start the activity
+                    .start(this);
+        } else if (id == R.id.action_backup) {
+            Intent b = new Intent(this, BackupActivity.class);
+            startActivity(b);
         }
 
         return super.onOptionsItemSelected(item);

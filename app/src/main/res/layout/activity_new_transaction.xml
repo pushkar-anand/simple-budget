@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -27,28 +28,27 @@
             android:typeface="normal" />
 
 
+        <RadioGroup
+            android:id="@+id/CrDr"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-            <RadioGroup
-                android:id="@+id/CrDr"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <RadioButton
+                android:id="@+id/creditRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:text="@string/credit" />
 
-                <RadioButton
-                    android:id="@+id/creditRadio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/credit" />
-
-                <RadioButton
-                    android:id="@+id/debitRadio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/debit" />
-            </RadioGroup>
+            <RadioButton
+                android:id="@+id/debitRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/debit" />
+        </RadioGroup>
 
         <Spinner
             android:id="@+id/catSpinner"
@@ -90,7 +90,7 @@
             android:id="@+id/dateButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="setDate"/>
+            android:onClick="setDate" />
 
         <Button
             android:id="@+id/saveTrans"
@@ -100,5 +100,19 @@
             android:text="@string/save" />
 
     </LinearLayout>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adViewTrans"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"
+        ads:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintHorizontal_bias="0.5"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toTopOf="parent"
+        ads:layout_constraintVertical_bias="0.965" />
 
 </android.support.constraint.ConstraintLayout>

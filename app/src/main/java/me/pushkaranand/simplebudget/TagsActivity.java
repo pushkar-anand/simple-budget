@@ -28,6 +28,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 
 import java.util.ArrayList;
@@ -44,12 +46,22 @@ public class TagsActivity extends AppCompatActivity
     List<Tags> tagsList;
     DatabaseHelper databaseHelper;
 
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tags);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //MobileAds.initialize(this, getResources().getString(R.string.ad_id));
+
+        mAdView = findViewById(R.id.adTagAct);
+        AdRequest adRequest = new AdRequest.Builder()
+                .build();
+
+        mAdView.loadAd(adRequest);
 
         databaseHelper = DatabaseHelper.getInstance(this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

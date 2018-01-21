@@ -20,29 +20,6 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
     //private static RecyclerViewClickListener itemListener;
     private Context context;
 
-    class RecycleHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
-        TextView amount, date, notes, category;
-        ConstraintLayout constraintLayout;
-
-        RecycleHolder(View view)
-        {
-            super(view);
-            amount = (TextView) view.findViewById(R.id.AmountTxt);
-            date = (TextView) view.findViewById(R.id.datetxt);
-            //notes = (TextView) view.findViewById(R.id.notesTxt);
-            category = (TextView) view.findViewById(R.id.categoryTxt);
-            constraintLayout = view.findViewById(R.id.recycleConstraint);
-        }
-        @Override
-        public void onClick(View view)
-        {
-            //itemListener.recyclerViewListClicked(v, this.getPosition());
-            int id = view.getId();
-            Log.d("Clicked: ", "Clicked at "+String.valueOf(id));
-        }
-    }
-
     public TransactionsAdapter(Context context, List<Transactions> TransactionList)
     {
         this.context = context;
@@ -70,7 +47,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
         {
             String str = "+"+String.valueOf(txn.getTxn_amount());
             holder.amount.setText(str);
-            holder.itemView.setBackgroundColor(Color.GREEN);
+            holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.credit_bg));
         }
         else if (txn.getTxn_type().equals("DEBIT"))
         {
@@ -100,5 +77,26 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
     public void updateData(List<Transactions> TransactionList)
     {
         this.TransactionList = TransactionList;
+    }
+
+    class RecycleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView amount, date, notes, category;
+        ConstraintLayout constraintLayout;
+
+        RecycleHolder(View view) {
+            super(view);
+            amount = (TextView) view.findViewById(R.id.AmountTxt);
+            date = (TextView) view.findViewById(R.id.datetxt);
+            //notes = (TextView) view.findViewById(R.id.notesTxt);
+            category = (TextView) view.findViewById(R.id.categoryTxt);
+            constraintLayout = view.findViewById(R.id.recycleConstraint);
+        }
+
+        @Override
+        public void onClick(View view) {
+            //itemListener.recyclerViewListClicked(v, this.getPosition());
+            int id = view.getId();
+            Log.d("Clicked: ", "Clicked at " + String.valueOf(id));
+        }
     }
 }
