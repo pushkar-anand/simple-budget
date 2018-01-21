@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -67,8 +69,6 @@ public class BackupActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private DriveClient mDriveClient;
     private DriveResourceClient mDriveResourceClient;
-
-    private String driveFileID;
 
     private TextView textView;
 
@@ -265,14 +265,83 @@ public class BackupActivity extends AppCompatActivity {
                 }
             }
         }
-        Log.d("RESTORE: ", "Started restore");
+        EXTERNAL_WRITE_PERMISSION = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (EXTERNAL_WRITE_PERMISSION == PackageManager.PERMISSION_GRANTED) {
+            Log.d("RESTORE: ", "Started restore");
 
-        if (sharedPreferences.contains("dbBackupDriveFileID")) {
+            if (sharedPreferences.contains("dbBackupDriveFileID") && sharedPreferences.contains("lastDbBackupTime")) {
 
-            restoreWithDriveIdFromPref();
+                final Query query = new Query.Builder()
+                        .addFilter(Filters.eq(SearchableField.TITLE, DatabaseHelper.DATABASE_NAME))
+                        .build();
 
+                final Task<DriveFolder> appFolderTask = mDriveResourceClient.getAppFolder();
+
+                appFolderTask.continueWithTask(new Continuation<DriveFolder, Task<MetadataBuffer>>() {
+                    @Override
+                    public Task<MetadataBuffer> then(@NonNull Task<DriveFolder> task) throws Exception {
+                        DriveFolder appFolder = appFolderTask.getResult();
+
+
+                        return mDriveResourceClient.queryChildren(appFolder, query);
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<MetadataBuffer>() {
+                    @Override
+                    public void onSuccess(MetadataBuffer metadata) {
+                        if (metadata.getCount() != 0) {
+                            Date fileDate = metadata.get(0).getModifiedDate();
+
+                            String sfTime = sharedPreferences.getString("lastDbBackupTime", "Never");
+
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+
+                            Date date;
+
+                            try {
+                                date = format.parse(sfTime);
+                            } catch (ParseException e) {
+                                Toast.makeText(BackupActivity.this, "Some error occurred", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                                return;
+                            }
+                            try {
+
+                                if (fileDate.after(date)) {
+                                    searchDriveAndRestore();
+                                } else {
+                                    restoreWithDriveIdFromPref();
+                                }
+                            } catch (NullPointerException e) {
+                                Toast.makeText(BackupActivity.this, "Some error occurred", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                            }
+                        } else {
+                            restoreWithDriveIdFromPref();
+                        }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
+
+                restoreWithDriveIdFromPref();
+
+            } else {
+                searchDriveAndRestore();
+            }
         } else {
-            searchDriveAndRestore();
+            Toast.makeText(this, "Storage permission is required to restore database", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.fromParts("package", getPackageName(), null));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+
+            Toast.makeText(this, "Please allow storage permission", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -282,7 +351,7 @@ public class BackupActivity extends AppCompatActivity {
         progressDialog.setMessage("Restoring");
         progressDialog.show();
 
-        driveFileID = sharedPreferences.getString("dbBackupDriveFileID", "");
+        String driveFileID = sharedPreferences.getString("dbBackupDriveFileID", "");
 
         DriveFile driveFile = DriveId.decodeFromString(driveFileID).asDriveFile();
 
@@ -304,13 +373,7 @@ public class BackupActivity extends AppCompatActivity {
 
                     Log.d("RESTORE: ", "External DIR mounted");
 
-                    //String baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-                    //String fileName = DatabaseHelper.DATABASE_NAME;
-
                     String databaseFullPath = getDatabasePath(DatabaseHelper.DATABASE_NAME).getAbsolutePath();
-
-
-                    //String fileFullName = baseDir + File.separator + fileName;
 
                     Log.d("RESTORE: ", databaseFullPath);
 
@@ -326,6 +389,7 @@ public class BackupActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     Toast.makeText(BackupActivity.this, "Restore Successful", Toast.LENGTH_SHORT).show();
                 } else {
+                    progressDialog.dismiss();
                     Toast.makeText(BackupActivity.this, "Some error occurred", Toast.LENGTH_SHORT).show();
                     Log.d("RESTORE: ", "External DIR not mounted");
                 }
@@ -335,6 +399,9 @@ public class BackupActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 Toast.makeText(BackupActivity.this, "Some error occurred", Toast.LENGTH_SHORT).show();
                 Log.d("RESTORE: ", "Failed");
 
@@ -375,7 +442,6 @@ public class BackupActivity extends AppCompatActivity {
                             Log.d("RESTORE: ", "open File task");
 
                             DriveContents driveContents = task.getResult();
-                            //TODO download file an add to database
 
                             InputStream inputStream = driveContents.getInputStream();
 
@@ -387,13 +453,9 @@ public class BackupActivity extends AppCompatActivity {
 
                                 Log.d("RESTORE: ", "External DIR mounted");
 
-                                //String baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-                                //String fileName = DatabaseHelper.DATABASE_NAME;
 
                                 String databaseFullPath = getDatabasePath(DatabaseHelper.DATABASE_NAME).getAbsolutePath();
 
-
-                                //String fileFullName = baseDir + File.separator + fileName;
 
                                 Log.d("RESTORE: ", databaseFullPath);
 
@@ -441,4 +503,5 @@ public class BackupActivity extends AppCompatActivity {
                         .build();
         return GoogleSignIn.getClient(this, signInOptions);
     }
+
 }
