@@ -10,11 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -194,6 +196,25 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
     }
 
     private void updateSpinners() {
+        ArrayList<String> lst = new ArrayList<String>();
+        int pos = 0;
+
+        for (int i = 0; i < tagsList.size(); i++) {
+            String tagName = tagsList.get(i).getTagName();
+            if (tagName.equals(txn.getTxn_category())) {
+                pos = i;
+            }
+            lst.add(tagName);
+        }
+
+        ArrayAdapter<String> SpinAdapter;
+
+        SpinAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, lst);
+        SpinAdapter.setNotifyOnChange(true);
+
+        SpinAdapter.setDropDownViewResource(R.layout.spinner_item);
+        editTag.setAdapter(SpinAdapter);
+        editTag.setSelection(pos);
 
     }
 
