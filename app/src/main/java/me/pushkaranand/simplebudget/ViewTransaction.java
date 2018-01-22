@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -33,6 +34,7 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
     //For edit transaction
     private Spinner editCrDr, editTag;
     private EditText editDate;
+    private TextInputEditText editAmt, editNote;
 
     
 
@@ -43,6 +45,17 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
         setContentView(R.layout.activity_view_transaction);
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        viewAmt = findViewById(R.id.amountTxt);
+        viewTag = findViewById(R.id.tagTxt);
+        viewDate = findViewById(R.id.dateTxt);
+        viewNote = findViewById(R.id.notesTxt);
+
+        editCrDr = findViewById(R.id.CrDrSpinner);
+        editTag = findViewById(R.id.TagSpin);
+        editDate = findViewById(R.id.DateSel);
+        editAmt = findViewById(R.id.amountEdt);
+        editNote = findViewById(R.id.NotesEdt);
 
 
         final FloatingActionButton fab = findViewById(R.id.fab);
@@ -66,12 +79,12 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
                 }
             }
         });
+
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Something went wrong" +
-                    "", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
         }
         Intent intent = getIntent();
         txn_id = intent.getIntExtra("TXN_ID",0);
@@ -163,7 +176,20 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
 
         //For edit transaction
         private Spinner editCrDr, editTag;
-        private EditText editDate;*/
+        private EditText editDate;
+        private TextInputEditText editAmt, editNote;*/
+
+        String x = (txn.getTxn_type().equals("DEBIT")) ? "-" : "+";
+        String y = x + String.valueOf(txn.getTxn_amount());
+
+        viewAmt.setText(y);
+        viewTag.setText(txn.getTxn_category());
+        viewDate.setText(txn.getTxn_date());
+        viewNote.setText(txn.getTxn_notes());
+
+        editAmt.setText(String.valueOf(txn.getTxn_amount()));
+        editNote.setText(txn.getTxn_notes());
+        editDate.setText(txn.getTxn_date());
 
     }
 
