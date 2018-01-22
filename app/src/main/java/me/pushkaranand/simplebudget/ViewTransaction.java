@@ -10,18 +10,29 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
 
 
 public class ViewTransaction extends AppCompatActivity implements LoaderManager.LoaderCallbacks
 {
-    Integer txn_id = null;
-    Tags tag;
-    EditText amount;
-    Boolean isInEditMode = false;
-
     private static final int TRANSACTION_LOADER = 1;
     private static final int TAGS_LOADER = 2;
+    Integer txn_id = null;
+    List<Tags> tagsList;
+    Transactions txn;
+    Boolean isInEditMode = false;
+    //For view transaction
+    private TextView viewAmt, viewTag, viewDate, viewNote;
+
+    //For edit transaction
+    private Spinner editCrDr, editTag;
+    private EditText editDate;
+
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -31,8 +42,6 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        amount = findViewById(R.id.AmountTxt);
-        amount.setEnabled(false);
 
         final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener()
@@ -54,7 +63,13 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
                 }
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Something went wrong" +
+                    "", Toast.LENGTH_SHORT).show();
+        }
         Intent intent = getIntent();
         txn_id = intent.getIntExtra("TXN_ID",0);
         if(txn_id != 0)
@@ -72,14 +87,17 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
 
     public void enableEditMode()
     {
-        //amount.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        amount.setEnabled(true);
-
+        Log.d("EDIT", "Edit mode enabled");
+        findViewById(R.id.viewLayout).setVisibility(View.GONE);
+        findViewById(R.id.editLayout).setVisibility(View.VISIBLE);
     }
+
     public void disableEditMode()
     {
-        //amount.setInputType(InputType.TYPE_NULL);
-        amount.setEnabled(false);
+        Log.d("EDIT", "Edit mode disabled");
+        findViewById(R.id.editLayout).setVisibility(View.GONE);
+        findViewById(R.id.viewLayout).setVisibility(View.VISIBLE);
+        saveUpdatedData();
     }
 
     @Override
@@ -112,6 +130,8 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
 
                 Log.i("LOADER_DATA", transaction.getTxn_type());
                 //process the data
+                txn = transaction;
+                updateTransactionViewData();
             }
             else
             {
@@ -120,13 +140,27 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
         }
         if(id == TAGS_LOADER)
         {
-            //tag = (Tags) o;
-            //
+            tagsList = (List<Tags>) o;
+            updateSpinners();
         }
     }
+
     @Override
     public void onLoaderReset(Loader loader)
     {
         //setListAdapter(null);
     }
+
+    private void updateTransactionViewData() {
+
+    }
+
+    private void updateSpinners() {
+
+    }
+
+    private void saveUpdatedData() {
+
+    }
+
 }

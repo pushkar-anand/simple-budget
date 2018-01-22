@@ -8,4 +8,17 @@
     tools:context="me.pushkaranand.simplebudget.SearchActivity"
     tools:showIn="@layout/app_bar_search">
 
+    <TextView
+        android:id="@+id/ntAvl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search is not available at this momemt. Will be available in future updates."
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="normal|bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
