@@ -116,6 +116,7 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
         findViewById(R.id.editLayout).setVisibility(View.GONE);
         findViewById(R.id.viewLayout).setVisibility(View.VISIBLE);
         saveUpdatedData();
+        recreate();
     }
 
     @Override
@@ -225,7 +226,6 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
 
         editCrDr.setAdapter(CrDrApadter);
 
-
         if (txn.getTxn_type().equals("CREDIT")) {
             editCrDr.setSelection(0);
         } else {
@@ -235,6 +235,6 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
 
     private void saveUpdatedData() {
 
-    }
 
+    }
 }

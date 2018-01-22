@@ -128,7 +128,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
         return (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME);
     }
 
-    public boolean updateTransaction(Integer id, String type, double amount, String category, String date, Integer year, String month, @Nullable String notes) {
+    public boolean updateTransaction(Integer id, String type, Double amount, String category, String date, Integer year, String month, @Nullable String notes, String old_category, Double old_amount, Integer tag_id, Integer old_tag_id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -143,8 +143,19 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
         db.update(TABLE_NAME, contentValues, COLUMN_NAME_ID + " = ?", new String[]{Integer.toString(id)});
 
+        if (!Objects.equals(old_category, category) && !Objects.equals(old_amount, amount)) {
+            updateTagSpend(old_tag_id, -old_amount);
+            updateTagSpend(tag_id, amount);
+        } else if (!Objects.equals(old_category, category) && Objects.equals(old_amount, amount)) {
+            updateTagSpend(tag_id, amount);
+            updateTagSpend(old_tag_id, -amount);
+        } else if (Objects.equals(old_category, category) && !Objects.equals(old_amount, amount)) {
+            updateTagSpend(tag_id, amount - old_amount);
+        }
+
         return true;
     }
+
 
     public Integer deleteTransaction(Integer id) {
 
@@ -229,7 +240,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME_TAG, contentValues, TAG_COLUMN_NAME_ID + " = ?", new String[]{Integer.toString(id)});
         return true;
     }
-
 
     public Integer deleteTag(Integer id) {
 
