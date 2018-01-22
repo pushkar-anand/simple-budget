@@ -37,6 +37,7 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
     private Spinner editCrDr, editTag;
     private EditText editDate;
     private TextInputEditText editAmt, editNote;
+    private int old;
 
     
 
@@ -198,12 +199,11 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
 
     private void updateSpinners() {
         ArrayList<String> lst = new ArrayList<>();
-        int pos = 0;
 
         for (int i = 0; i < tagsList.size(); i++) {
             String tagName = tagsList.get(i).getTagName();
             if (tagName.equals(txn.getTxn_category())) {
-                pos = i;
+                old = i;
             }
             lst.add(tagName);
         }
@@ -215,7 +215,7 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
 
         SpinAdapter.setDropDownViewResource(R.layout.spinner_item);
         editTag.setAdapter(SpinAdapter);
-        editTag.setSelection(pos);
+        editTag.setSelection(old);
 
         ArrayList<String> l = new ArrayList<>();
         l.add("CREDIT");
@@ -234,7 +234,27 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
     }
 
     private void saveUpdatedData() {
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
 
+        String type = editCrDr.getSelectedItem().toString();
 
+        String tag = editTag.getSelectedItem().toString();
+        String old_tag = txn.getTxn_category();
+        String tag_id = String.valueOf(editTag.getSelectedItemId());
+        Integer old_tag_id = old;
+
+        Double amount = Double.valueOf(editAmt.getText().toString());
+        Double old_amount = txn.getTxn_amount();
+
+        String note = editNote.getText().toString();
+
+        String date = editDate.getText().toString();
+
+        String[] arr = date.split("/");
+
+        Integer year = Integer.valueOf(arr[2]);
+        String month = arr[1];
+
+        databaseHelper.updateTransaction(txn_id, type, amount, tag, date, year, month, note, old_tag, old_amount, Integer.valueOf(tag_id), old_tag_id);
     }
 }

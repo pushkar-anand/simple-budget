@@ -142,7 +142,6 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
                     // Notify the selected item text
                     Toast.makeText(getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
                     catg = selectedItemText;
-
                 }
             }
 
