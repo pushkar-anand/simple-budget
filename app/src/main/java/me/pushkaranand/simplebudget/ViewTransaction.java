@@ -196,7 +196,7 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
     }
 
     private void updateSpinners() {
-        ArrayList<String> lst = new ArrayList<String>();
+        ArrayList<String> lst = new ArrayList<>();
         int pos = 0;
 
         for (int i = 0; i < tagsList.size(); i++) {
@@ -207,15 +207,30 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
             lst.add(tagName);
         }
 
-        ArrayAdapter<String> SpinAdapter;
+        ArrayAdapter<String> SpinAdapter, CrDrApadter;
 
-        SpinAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, lst);
+        SpinAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, lst);
         SpinAdapter.setNotifyOnChange(true);
 
         SpinAdapter.setDropDownViewResource(R.layout.spinner_item);
         editTag.setAdapter(SpinAdapter);
         editTag.setSelection(pos);
 
+        ArrayList<String> l = new ArrayList<>();
+        l.add("CREDIT");
+        l.add("DEBIT");
+
+        CrDrApadter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, l);
+        CrDrApadter.setDropDownViewResource(R.layout.spinner_item);
+
+        editCrDr.setAdapter(CrDrApadter);
+
+
+        if (txn.getTxn_type().equals("CREDIT")) {
+            editCrDr.setSelection(0);
+        } else {
+            editCrDr.setSelection(1);
+        }
     }
 
     private void saveUpdatedData() {
