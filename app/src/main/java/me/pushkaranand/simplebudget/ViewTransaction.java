@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -117,7 +118,10 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
         findViewById(R.id.editLayout).setVisibility(View.GONE);
         findViewById(R.id.viewLayout).setVisibility(View.VISIBLE);
         saveUpdatedData();
-        recreate();
+        Intent i = new Intent(this, ViewTransaction.class);
+        i.putExtra("TXN_ID", txn_id);
+        startActivity(i);
+        finish();
     }
 
     @Override
@@ -240,8 +244,8 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
 
         String tag = editTag.getSelectedItem().toString();
         String old_tag = txn.getTxn_category();
-        String tag_id = String.valueOf(editTag.getSelectedItemId());
-        Integer old_tag_id = old;
+        String tag_id = String.valueOf(editTag.getSelectedItemId() + 1);
+        Integer old_tag_id = old + 1;
 
         Double amount = Double.valueOf(editAmt.getText().toString());
         Double old_amount = txn.getTxn_amount();
@@ -250,7 +254,9 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
 
         String date = editDate.getText().toString();
 
-        String[] arr = date.split("/");
+        String[] arr = date.split("-");
+
+        Log.d("DATE: ", Arrays.toString(arr));
 
         Integer year = Integer.valueOf(arr[2]);
         String month = arr[1];
