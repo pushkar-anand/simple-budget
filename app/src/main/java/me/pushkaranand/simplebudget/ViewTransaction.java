@@ -21,10 +21,12 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
 {
     private static final int TRANSACTION_LOADER = 1;
     private static final int TAGS_LOADER = 2;
+
     Integer txn_id = null;
     List<Tags> tagsList;
     Transactions txn;
-    Boolean isInEditMode = false;
+
+    Boolean isInEditMode = false, isLoaded = false;
     //For view transaction
     private TextView viewAmt, viewTag, viewDate, viewNote;
 
@@ -49,17 +51,18 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
             @Override
             public void onClick(View view)
             {
-                if(!isInEditMode)
-                {
-                    isInEditMode = true;
-                    fab.setImageResource(R.drawable.ic_action_done);
-                    enableEditMode();
-                }
-                else if(isInEditMode)
-                {
-                    isInEditMode = false;
-                    fab.setImageResource(R.drawable.ic_action_edit);
-                    disableEditMode();
+                if (isLoaded) {
+                    if (!isInEditMode) {
+                        isInEditMode = true;
+                        fab.setImageResource(R.drawable.ic_action_done);
+                        enableEditMode();
+                    } else if (isInEditMode) {
+                        isInEditMode = false;
+                        fab.setImageResource(R.drawable.ic_action_edit);
+                        disableEditMode();
+                    }
+                } else {
+                    Toast.makeText(ViewTransaction.this, "Contents not loaded. Please click again in few moments", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -119,6 +122,8 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
     public void onLoadFinished(Loader loader, Object o)
     {
         int id = loader.getId();
+        isLoaded = true;
+
         if(id == TRANSACTION_LOADER)
         {
             Transactions transaction = (Transactions) o;
@@ -152,6 +157,13 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
     }
 
     private void updateTransactionViewData() {
+
+        /*//For view transaction
+        private TextView viewAmt, viewTag, viewDate, viewNote;
+
+        //For edit transaction
+        private Spinner editCrDr, editTag;
+        private EditText editDate;*/
 
     }
 
