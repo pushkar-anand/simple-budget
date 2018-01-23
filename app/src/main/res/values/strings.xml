@@ -63,4 +63,5 @@
 
     <string name="last_backup">Last Backup:&#160;&#160;</string>
     <string name="backup_screen_info">Backup and restore transactions from google drive.\n Backing up on google drive allows to move data between devices.</string>
+    <string name="reset">Reset</string>
 </resources>

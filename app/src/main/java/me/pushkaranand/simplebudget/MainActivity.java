@@ -152,17 +152,7 @@ public class MainActivity extends AppCompatActivity
     public void createDefaultTags()
     {
         DatabaseHelper db = DatabaseHelper.getInstance(this);
-
-        db.newTag("Food and Dining",0.0,-1.0);
-        db.newTag("Entertainment",0.0,-1.0);
-        db.newTag("Transportation",0.0,-1.0);
-        db.newTag("Stationary",0.0,-1.0);
-        db.newTag("Rations",0.0,-1.0);
-        db.newTag("Shopping",0.0,-1.0);
-        db.newTag("Bills and Utilities",0.0,-1.0);
-        db.newTag("Gifts and Donation",0.0,-1.0);
-        db.newTag("Health and Fitness",0.0,-1.0);
-        db.newTag("Personal",0.0,-1.0);
+        db.initiateTagTable();
     }
 
     public void updateBalance(String s)
@@ -326,7 +316,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);*/
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

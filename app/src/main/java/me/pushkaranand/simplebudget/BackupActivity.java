@@ -504,4 +504,10 @@ public class BackupActivity extends AppCompatActivity {
         return GoogleSignIn.getClient(this, signInOptions);
     }
 
+    public void resetDatabase(View view) {
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
+        databaseHelper.resetDatabase();
+        databaseHelper.initiateTagTable();
+    }
+
 }

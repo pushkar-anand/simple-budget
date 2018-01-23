@@ -82,6 +82,41 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    void resetDatabase() {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_TAG);
+
+        String createQuery = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME
+                + "("
+                + COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_NAME_TYPE + " TEXT  NOT NULL, "
+                + COLUMN_NAME_AMOUNT + " REAL  NOT NULL, "
+                + COLUMN_NAME_CATEGORY + " TEXT  NOT NULL, "
+                + COLUMN_NAME_DATE + " TEXT  NOT NULL, "
+                + COLUMN_NAME_YEAR + " INT  NOT NULL, "
+                + COLUMN_NAME_MONTH + " TEXT  NOT NULL, "
+                + COLUMN_NAME_NOTES + " TEXT"
+                + ")";
+
+        Log.d("SQL_CREATE: ", createQuery);
+
+        sqLiteDatabase.execSQL(createQuery);
+
+        createQuery = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME_TAG
+                + "("
+                + TAG_COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + TAG_COLUMN_NAME_NAME + " TEXT  NOT NULL, "
+                + TAG_COLUMN_NAME_SPEND + " REAL  NOT NULL, "
+                + TAG_COLUMN_NAME_LIMIT + " REAL"
+                + ")"
+        ;
+
+        Log.d("SQL_CREATE: ", createQuery);
+        sqLiteDatabase.execSQL(createQuery);
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String deleteQuery = "DROP TABLE IF EXISTS" + TABLE_NAME;
@@ -128,7 +163,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
         return (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME);
     }
 
-    public boolean updateTransaction(Integer id, String type, Double amount, String category, String date, Integer year, String month, @Nullable String notes, String old_category, Double old_amount, Integer tag_id, Integer old_tag_id) {
+    void updateTransaction(Integer id, String type, Double amount, String category, String date, Integer year, String month, @Nullable String notes, String old_category, Double old_amount, Integer tag_id, Integer old_tag_id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -153,7 +188,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
             updateTagSpend(tag_id, amount - old_amount);
         }
 
-        return true;
     }
 
 
@@ -200,6 +234,19 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
         Balance = Credit - Debit;
         return Balance;
+    }
+
+    void initiateTagTable() {
+        newTag("Food and Dining", 0.0, -1.0);
+        newTag("Entertainment", 0.0, -1.0);
+        newTag("Transportation", 0.0, -1.0);
+        newTag("Stationary", 0.0, -1.0);
+        newTag("Rations", 0.0, -1.0);
+        newTag("Shopping", 0.0, -1.0);
+        newTag("Bills and Utilities", 0.0, -1.0);
+        newTag("Gifts and Donation", 0.0, -1.0);
+        newTag("Health and Fitness", 0.0, -1.0);
+        newTag("Personal", 0.0, -1.0);
     }
 
 
