@@ -52,10 +52,10 @@
     <string name="button_restore">Restore</string>
 
     <!--Real unit id-->
-    <!--<string name="banner_ad_unit_id">ca-app-pub-4200512046448987/1032467573</string>-->
+    <string name="banner_ad_unit_id">ca-app-pub-4200512046448987/1032467573</string>
 
     <!--Test unit id-->
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <!--<string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
 
 
     <string name="ad_id">ca-app-pub-4200512046448987~9294100970</string>
