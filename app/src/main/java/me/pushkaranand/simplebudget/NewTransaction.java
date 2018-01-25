@@ -239,15 +239,25 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
                     String txn_category = catg;
                     Integer id = pos;
 
-                    if (databaseHelper.newTransaction(txn_type, txn_amount, txn_category, txn_date, txn_year, txn_month, txn_notes, id))
+                    Double currSpend = databaseHelper.getTagSpend(id);
+                    Double limit = databaseHelper.getTagLimit(id);
+
+
+                    if (currSpend + txn_amount >= limit)
                     {
-                        Intent intent = new Intent(this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                    else
-                    {
-                        Toast.makeText(this, "Error adding transaction", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                "You are exceeding the limit for " + txn_category,
+                                Toast.LENGTH_LONG)
+                                .show();
+                    } else {
+
+                        if (databaseHelper.newTransaction(txn_type, txn_amount, txn_category, txn_date, txn_year, txn_month, txn_notes, id)) {
+                            Intent intent = new Intent(this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(this, "Error adding transaction", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                 }

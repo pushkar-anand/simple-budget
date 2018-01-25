@@ -1,6 +1,8 @@
 package me.pushkaranand.simplebudget;
 
+import android.app.AlarmManager;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
@@ -86,6 +88,9 @@ public class MainActivity extends AppCompatActivity
                 .build();
         mAdView.loadAd(adRequest);
 
+
+        startRemindingService();
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -100,8 +105,13 @@ public class MainActivity extends AppCompatActivity
         {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("FIRST_RUN", false);
+            editor.putInt("RESET_DATE", 1);
             editor.apply();
             createDefaultTags();
+        } else if (!sharedPreferences.contains("RESET_DATE")) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("RESET_DATE", 1);
+            editor.apply();
         }
 
         databaseHelper = DatabaseHelper.getInstance(this);
@@ -224,6 +234,8 @@ public class MainActivity extends AppCompatActivity
 
             //
         }
+
+        sendAlertIfRequired();
     }
 
     @Override
@@ -268,6 +280,16 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.action_backup) {
             Intent b = new Intent(this, BackupActivity.class);
             startActivity(b);
+        } else if (id == R.id.action_reset_spend) {
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getApplicationContext());
+                    databaseHelper.resetSpends();
+                }
+            };
+
+            thread.start();
         }
 
         return super.onOptionsItemSelected(item);
@@ -344,6 +366,37 @@ public class MainActivity extends AppCompatActivity
             }
 
         }
+    }
+
+    private void startRemindingService() {
+        Log.d("NOTIFIER: ", "Starting");
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 21);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        Intent intent = new Intent(this, AddTransactionReminder.class);
+
+        PendingIntent pendingIntent = PendingIntent.getService(this,
+                1,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        if (alarmManager != null) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                    calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pendingIntent);
+        } else {
+            Log.e("NotifyAlarm", "alarmMngr is null");
+        }
+    }
+
+    private void sendAlertIfRequired() {
+        Intent intent = new Intent(this, LimitCheckerService.class);
+        startService(intent);
     }
 
     private static class PrepareData extends AsyncTaskLoader<Pair<ArrayList<Transactions>, Double>> {

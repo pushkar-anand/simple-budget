@@ -237,20 +237,20 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     void initiateTagTable() {
-        newTag("Food and Dining", 0.0, -1.0);
-        newTag("Entertainment", 0.0, -1.0);
-        newTag("Transportation", 0.0, -1.0);
-        newTag("Stationary", 0.0, -1.0);
-        newTag("Rations", 0.0, -1.0);
-        newTag("Shopping", 0.0, -1.0);
-        newTag("Bills and Utilities", 0.0, -1.0);
-        newTag("Gifts and Donation", 0.0, -1.0);
-        newTag("Health and Fitness", 0.0, -1.0);
-        newTag("Personal", 0.0, -1.0);
+        newTag("Food and Dining", 0.0, (double) 0);
+        newTag("Entertainment", 0.0, (double) 0);
+        newTag("Transportation", 0.0, (double) 0);
+        newTag("Stationary", 0.0, (double) 0);
+        newTag("Rations", 0.0, (double) 0);
+        newTag("Shopping", 0.0, (double) 0);
+        newTag("Bills and Utilities", 0.0, (double) 0);
+        newTag("Gifts and Donation", 0.0, (double) 0);
+        newTag("Health and Fitness", 0.0, (double) 0);
+        newTag("Personal", 0.0, (double) 0);
     }
 
 
-    boolean newTag(String name, Double spend, @Nullable Double limit) {
+    void newTag(String name, Double spend, @Nullable Double limit) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -259,7 +259,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(TAG_COLUMN_NAME_LIMIT, limit);
 
         db.insert(TABLE_NAME_TAG, null, contentValues);
-        return true;
     }
 
 
@@ -312,7 +311,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
         return array_list;
     }
 
-    private Double getTagSpend(Integer tag_id) {
+
+    Double getTagSpend(Integer tag_id) {
         Cursor res = this.getTagData(tag_id);
         res.moveToFirst();
         Double spend = res.getDouble(res.getColumnIndex(DatabaseHelper.TAG_COLUMN_NAME_SPEND));
@@ -320,11 +320,37 @@ class DatabaseHelper extends SQLiteOpenHelper {
         return spend;
     }
 
-    void updateTagSpend(Integer tag_id, Double new_spend) {
+    Double getTagLimit(Integer tag_id) {
+        Cursor res = this.getTagData(tag_id);
+        res.moveToFirst();
+        Double limit = res.getDouble(res.getColumnIndex(DatabaseHelper.TAG_COLUMN_NAME_LIMIT));
+        res.close();
+        return limit;
+    }
+
+    private void updateTagSpend(Integer tag_id, Double new_spend) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TAG_COLUMN_NAME_SPEND, new_spend + getTagSpend(tag_id));
 
         db.update(TABLE_NAME_TAG, contentValues, TAG_COLUMN_NAME_ID + " = ?", new String[]{Integer.toString(tag_id)});
     }
+
+    private void resetTagSpend(Integer tag_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TAG_COLUMN_NAME_SPEND, 0);
+
+        db.update(TABLE_NAME_TAG, contentValues, TAG_COLUMN_NAME_ID + " = ?", new String[]{Integer.toString(tag_id)});
+    }
+
+    void resetSpends() {
+        ArrayList<Integer> ids = ListTagIds();
+
+        for (Integer id : ids) {
+            resetTagSpend(id);
+        }
+    }
+
+
 }
