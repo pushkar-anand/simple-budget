@@ -1,10 +1,13 @@
 package me.pushkaranand.simplebudget;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -127,6 +131,18 @@ public class MainActivity extends AppCompatActivity
         getLoaderManager().initLoader(TRANSACTIONS_LOADER, null, this).forceLoad();
 
         //new PrepareData(this);
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                if (isUpdateAvailable()) {
+                    sendUpdateNotification();
+                }
+            }
+        };
+
+        thread.start();
+
     }
 
     public void createDefaultTags()
@@ -179,7 +195,7 @@ public class MainActivity extends AppCompatActivity
             Log.d("LOADER", " LoadFinished");
 
             if (data != null && !data.first.isEmpty()) {
-                TList = data.first;
+                TList = sortTransactionByDate(data.first);
                 Log.i("LOADER_DATA", TList.get(0).getTxn_type());
 
                 transactionsAdapter.updateData(TList);
@@ -247,6 +263,46 @@ public class MainActivity extends AppCompatActivity
             };
 
             thread.start();
+        } else if (id == R.id.action_feedback) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+            builder.setCancelable(false)
+                    .setTitle("Feedback")
+                    .setMessage("Are you satisfied with this app??")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            Toast.makeText(MainActivity.this, "Please rate this application with 5 stars",
+                                    Toast.LENGTH_LONG).show();
+                            try {
+                                startActivity(new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse("market://details?id=" + getResources().getString(R.string.appID))));
+                            } catch (ActivityNotFoundException e) {
+                                e.printStackTrace();
+                                startActivity(new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse(getResources().getString(R.string.app_playstore_link))));
+                            }
+
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            Intent Email = new Intent(Intent.ACTION_SEND);
+                            Email.setType("text/email");
+                            Email.putExtra(Intent.EXTRA_EMAIL, new String[]{"anandpushkar088@gmail.com"});
+                            Email.putExtra(Intent.EXTRA_SUBJECT, "Feedback for app Simple Budget");
+                            Email.putExtra(Intent.EXTRA_TEXT, "Dear ...," + "");
+                            startActivity(Intent.createChooser(Email, "Send Feedback:"));
+                        }
+                    });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -348,6 +404,18 @@ public class MainActivity extends AppCompatActivity
     private void sendAlertIfRequired() {
         Intent intent = new Intent(this, LimitCheckerService.class);
         startService(intent);
+    }
+
+    private ArrayList<Transactions> sortTransactionByDate(ArrayList<Transactions> toSort) {
+        return toSort;
+    }
+
+    private boolean isUpdateAvailable() {
+        return false;
+    }
+
+    private void sendUpdateNotification() {
+
     }
 
     private static class PrepareData extends AsyncTaskLoader<Pair<ArrayList<Transactions>, Double>> {

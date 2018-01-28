@@ -101,6 +101,7 @@ public class AddTransactionReminder extends IntentService {
                     .setPriority(PRIORITY_MAX)
                     .setAutoCancel(true)
                     .setDefaults(DEFAULT_ALL)
+                    .setContentIntent(resultPendingIntent)
                     .addAction(R.drawable.ic_add, "ADD NOW", resultPendingIntent);
         }
 
