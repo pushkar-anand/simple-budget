@@ -37,10 +37,6 @@
             android:textSize="30sp"
             android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/selectorSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="55dp" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

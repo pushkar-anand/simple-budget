@@ -69,6 +69,7 @@ public class BackupActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private DriveClient mDriveClient;
     private DriveResourceClient mDriveResourceClient;
+    private boolean accountConnected = false;
 
     private TextView textView;
 
@@ -144,18 +145,24 @@ public class BackupActivity extends AppCompatActivity {
 
             case REQUEST_CODE_SIGN_IN:
                 if (resultCode == RESULT_OK) {
-                    mDriveClient = Drive.getDriveClient(this, GoogleSignIn.getLastSignedInAccount(this));
-
-                    mDriveResourceClient = Drive.getDriveResourceClient(this, GoogleSignIn.getLastSignedInAccount(this));
+                    accountConnected = true;
+                    mDriveClient = Drive.getDriveClient(this,
+                            GoogleSignIn.getLastSignedInAccount(this));
+                    mDriveResourceClient = Drive.getDriveResourceClient(this,
+                            GoogleSignIn.getLastSignedInAccount(this));
                 }
 
             default:
-
                 super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
     public void startBackup(View view) {
+        if (!accountConnected) {
+            Toast.makeText(this, "Please sign in using google", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
         final File currentDB = this.getDatabasePath(DatabaseHelper.DATABASE_NAME);
@@ -242,6 +249,11 @@ public class BackupActivity extends AppCompatActivity {
     }
 
     public void startRestore(View view) {
+        if (!accountConnected) {
+            Toast.makeText(this, "Please sign in using google", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         int EXTERNAL_WRITE_PERMISSION = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

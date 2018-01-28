@@ -243,6 +243,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
         newTag("Stationary", 0.0, (double) 0);
         newTag("Rations", 0.0, (double) 0);
         newTag("Shopping", 0.0, (double) 0);
+        newTag("Salary", 0.0, (double) 0);
         newTag("Bills and Utilities", 0.0, (double) 0);
         newTag("Gifts and Donation", 0.0, (double) 0);
         newTag("Health and Fitness", 0.0, (double) 0);

@@ -95,7 +95,9 @@ public class TagsActivity extends AppCompatActivity
                                                        {
                                                            databaseHelper.newTag(n.getText().toString(),0.0,Double.valueOf(l.getText().toString()));
                                                            dialogInterface.dismiss();
-                                                           recreate();
+                                                           Intent x = new Intent(TagsActivity.this, TagsActivity.class);
+                                                           startActivity(x);
+                                                           finish();
                                                            //getLoaderManager().restartLoader(TAGS_LOADER,null,TagsActivity.this);
                                                        }
 

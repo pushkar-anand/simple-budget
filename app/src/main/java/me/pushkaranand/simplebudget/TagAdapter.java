@@ -2,6 +2,7 @@ package me.pushkaranand.simplebudget;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -71,7 +72,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.RecycleHolder> {
                                 } else {
                                     db.updateTag(tag_id, n.getText().toString(), tag.getTagSpend(), Double.valueOf(l.getText().toString()));
                                     dialogInterface.dismiss();
-                                    //getLoaderManager().restartLoader(TAGS_LOADER,null,TagsActivity.this);
+                                    Intent x = new Intent(view.getContext(), TagsActivity.class);
+                                    view.getContext().startActivity(x);
                                 }
 
                             }

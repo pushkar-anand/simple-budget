@@ -28,9 +28,6 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +40,6 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks {
@@ -60,9 +56,7 @@ public class MainActivity extends AppCompatActivity
     RecyclerView recyclerView;
     List<Transactions> TList;
     DatabaseHelper databaseHelper;
-    String[] spinData;
     private TransactionsAdapter transactionsAdapter;
-    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -83,7 +77,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mAdView = findViewById(R.id.adViewMain);
+        AdView mAdView = findViewById(R.id.adViewMain);
         AdRequest adRequest = new AdRequest.Builder()
                 .build();
         mAdView.loadAd(adRequest);
@@ -118,30 +112,6 @@ public class MainActivity extends AppCompatActivity
         //availableBalance = 00.00;//databaseHelper.getAvailableBalance();
 
         blncView = findViewById(R.id.avlBlnc);
-
-        spinData = new String[]{"All", "Today", "Yesterday", "This Week", "This Month"};
-
-        Spinner selectorSpinner = findViewById(R.id.selectorSpinner);
-        ArrayAdapter<String> selectorAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, spinData);
-        selectorSpinner.setAdapter(selectorAdapter);
-
-        selectorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                String selectedItemText = (String) adapterView.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
-                Bundle b = new Bundle();
-                b.putString("Item", selectedItemText);
-                getLoaderManager().initLoader(1, b, MainActivity.this).forceLoad();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView)
-            {
-
-            }
-        });
-
 
         recyclerView = findViewById(R.id.TlistR);
         TList = new ArrayList<>();
@@ -188,14 +158,9 @@ public class MainActivity extends AppCompatActivity
     {
         if (id == TRANSACTIONS_LOADER)
         {
-            Log.e("TEST", "Create Loader");
-            if (args == null) {
-                Log.d("LoaderCreate: ", "Bundle is null");
-                return new PrepareData(this);
-            } else {
-                String s = args.getString("Item");
-                return new PrepareData(this, s);
-            }
+            Log.e("TEST", "Create Transaction Loader ");
+            return new PrepareData(this);
+
         }
         if(id == TAGS_LOADER)
         {
@@ -204,12 +169,11 @@ public class MainActivity extends AppCompatActivity
         return null;
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public void onLoadFinished(Loader loader, Object o)
-    {
+    public void onLoadFinished(Loader loader, Object o) {
         int id = loader.getId();
-        if(id == TRANSACTIONS_LOADER)
-        {
+        if(id == TRANSACTIONS_LOADER) {
             Pair<ArrayList<Transactions>, Double> data = (Pair<ArrayList<Transactions>, Double>) o;
 
             Log.d("LOADER", " LoadFinished");
@@ -218,21 +182,17 @@ public class MainActivity extends AppCompatActivity
                 TList = data.first;
                 Log.i("LOADER_DATA", TList.get(0).getTxn_type());
 
-                //List<Transactions> f = new ArrayList<>();
-                //recyclerView.setAdapter(new TransactionsAdapter(f));
                 transactionsAdapter.updateData(TList);
                 transactionsAdapter.notifyDataSetChanged();
                 updateBalance(String.valueOf(data.second));
-                //setListAdapter(new PrepareData(this, data));
 
             } else {
                 Log.e("LOADER_DATA ", "NULL OR EMPTY");
             }
         }
-        if(id == TAGS_LOADER)
-        {
+        if(id == TAGS_LOADER) {
 
-            //
+
         }
 
         sendAlertIfRequired();
@@ -263,12 +223,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_about) {
@@ -286,6 +242,7 @@ public class MainActivity extends AppCompatActivity
                 public void run() {
                     DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getApplicationContext());
                     databaseHelper.resetSpends();
+                    Toast.makeText(MainActivity.this, "Spends have been reset", Toast.LENGTH_SHORT).show();
                 }
             };
 
@@ -330,12 +287,6 @@ public class MainActivity extends AppCompatActivity
                     .setCallToActionText(getString(R.string.invitation_cta))
                     .build();
             startActivityForResult(i, REQUEST_INVITE);
-            /*intent = new Intent();
-            intent.setAction(Intent.ACTION_SEND);
-            intent.putExtra(Intent.EXTRA_TEXT,
-                    "Hey check out this app at: "+R.string.app_playstore_link);
-            intent.setType("text/plain");
-            startActivity(intent);*/
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -369,7 +320,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startRemindingService() {
-        Log.d("NOTIFIER: ", "Starting");
+        Log.d("FUNCTION : ", "Starting startRemindingService");
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 21);
@@ -403,15 +354,9 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Integer> ids;
         Cursor res;
         Transactions txn;
-        String listType = null;
 
         PrepareData(Context context) {
             super(context);
-        }
-
-        PrepareData(Context context, String s) {
-            super(context);
-            listType = s;
         }
 
         @Override
@@ -453,86 +398,14 @@ public class MainActivity extends AppCompatActivity
                 } else if (txn_type.equals("DEBIT")) {
                     balance -= txn_amount;
                 }
-                if (listType == null || listType.equals("All"))
-                {
-                    arrayList.add(txn);
-                }
-                else
-                {
-                    if (listType.equals("Today") && isToday(txn_date))
-                    {
-                        arrayList.add(txn);
-                    }
-                    else if (listType.equals("Yesterday") && isYesterday(txn_date))
-                    {
-                        arrayList.add(txn);
-                    }
-                    else if(listType.equals("This Week") && isThisWeek(txn_date))
-                    {
-                        arrayList.add(txn);
-                    }
-                    else if(listType.equals("This Month") && isThisMonth(txn_date))
-                    {
-                        arrayList.add(txn);
-                    }
-                }
+
+                arrayList.add(txn);
             }
             Log.d("TaskLoader: ", "Returning");
 
             return new Pair<>(arrayList,balance);
         }
 
-        private boolean isToday(String d) {
-            Calendar calendar = Calendar.getInstance();
-            Integer year = calendar.get(Calendar.YEAR);
-
-            Integer month = calendar.get(Calendar.MONTH) + 1;
-            Integer day = calendar.get(Calendar.DAY_OF_MONTH);
-
-            String date = String.valueOf(day) + "-" + String.valueOf(month) + "-" + String.valueOf(year);
-
-            return Objects.equals(date, d);
-        }
-
-        private boolean isYesterday(String d) {
-            String date;
-            Calendar calendar = Calendar.getInstance();
-            Integer year = calendar.get(Calendar.YEAR);
-
-            Integer month = calendar.get(Calendar.MONTH) + 1;
-            Integer day = calendar.get(Calendar.DAY_OF_MONTH);
-
-            if (day == 1 && month == 1) {
-                date = String.valueOf(31) + "-" + String.valueOf(12) + "-" + String.valueOf(year - 1);
-            } else if (day == 1 && month == 3 && year % 4 == 0) {
-                date = String.valueOf(29) + "-" + String.valueOf(2) + "-" + String.valueOf(year);
-            } else if (day == 1 && month == 3) {
-                date = String.valueOf(28) + "-" + String.valueOf(2) + "-" + String.valueOf(year);
-            } else if (day == 1 && (month == 2 || month == 4 || month == 6 || month == 9 || month == 11)) {
-                date = String.valueOf(31) + "-" + String.valueOf(month - 1) + "-" + String.valueOf(year);
-            } else if (day == 1) {
-                date = String.valueOf(30) + "-" + String.valueOf(month - 1) + "-" + String.valueOf(year);
-            } else {
-                date = String.valueOf(day - 1) + "-" + String.valueOf(month) + "-" + String.valueOf(year);
-            }
-
-            return date.equals(d);
-        }
-
-        private boolean isThisWeek(String d) {
-            return false;
-        }
-
-        private boolean isThisMonth(String d) {
-            String date;
-            Calendar calendar = Calendar.getInstance();
-
-            Integer month = calendar.get(Calendar.MONTH) + 1;
-
-            String[] s = d.split("-");
-
-            return String.valueOf(month).equals(s[1]);
-        }
         protected void onReleaseResources() {
             res.close();
         }

@@ -11,9 +11,7 @@ import java.util.List;
 class TagLoader extends AsyncTaskLoader<List<Tags>>
 {
     private DatabaseHelper dbHelper;
-    private ArrayList<Integer> ids;
     private Cursor res;
-    private Tags tags;
 
     TagLoader(Context context)
     {
@@ -28,7 +26,7 @@ class TagLoader extends AsyncTaskLoader<List<Tags>>
         List<Tags> tagsList  = new ArrayList<Tags>();
         Tags n;
 
-        ids = dbHelper.ListTagIds();
+        ArrayList<Integer> ids = dbHelper.ListTagIds();
         Log.d("TAGS: ", String.valueOf(ids.size()));
         for (Integer id : ids) {
             Integer i;
