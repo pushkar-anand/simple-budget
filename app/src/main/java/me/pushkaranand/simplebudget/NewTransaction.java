@@ -33,6 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 @SuppressWarnings("deprecation")
 public class NewTransaction extends AppCompatActivity implements LoaderManager.LoaderCallbacks
@@ -243,7 +244,7 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
                     Double limit = databaseHelper.getTagLimit(id);
 
 
-                    if (currSpend + txn_amount >= limit)
+                    if (currSpend + txn_amount >= limit && limit != 0 && Objects.equals(txn_type, "DEBIT"))
                     {
                         Toast.makeText(this,
                                 "You are exceeding the limit for " + txn_category,

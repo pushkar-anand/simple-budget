@@ -130,19 +130,6 @@ public class MainActivity extends AppCompatActivity
 
         getLoaderManager().initLoader(TRANSACTIONS_LOADER, null, this).forceLoad();
 
-        //new PrepareData(this);
-
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                if (isUpdateAvailable()) {
-                    sendUpdateNotification();
-                }
-            }
-        };
-
-        thread.start();
-
     }
 
     public void createDefaultTags()
