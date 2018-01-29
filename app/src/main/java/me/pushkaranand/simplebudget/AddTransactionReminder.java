@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
@@ -15,7 +16,7 @@ import static android.support.v4.app.NotificationCompat.DEFAULT_ALL;
 import static android.support.v4.app.NotificationCompat.PRIORITY_MAX;
 
 public class AddTransactionReminder extends IntentService {
-    public static final String PREF = "simple-budget";
+    private static final String PREF = "simple-budget";
 
     public AddTransactionReminder() {
         super("AddTransactionReminder");
@@ -23,6 +24,8 @@ public class AddTransactionReminder extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences(PREF, Context.MODE_PRIVATE);
+
         Log.d("Service: ", "Service AddTransactionReminder Started");
 
         String msg = "Did you spend any money today??";
@@ -45,8 +48,7 @@ public class AddTransactionReminder extends IntentService {
                 );
 
 
-        NotificationCompat.Builder mBuilder =
-                null;
+        NotificationCompat.Builder mBuilder;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             // The id of the channel.
             String id = "my_channel_01";

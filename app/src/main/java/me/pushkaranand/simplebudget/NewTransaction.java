@@ -39,18 +39,17 @@ import java.util.Objects;
 public class NewTransaction extends AppCompatActivity implements LoaderManager.LoaderCallbacks
 {
     private static final int TAGS_LOADER = 2;
-    RadioGroup crDr;
     RadioButton cr, dr;
-    EditText amount, notes;
-    Spinner catSpin;
-    Button dateBtn, saveBtn;
-    String catg;
-    int pos;
-    ArrayAdapter<String> SpinAdapter;
-    String[] categories = new String[4];
+    private RadioGroup crDr;
+    private EditText amount;
+    private EditText notes;
+    private Button dateBtn;
+    private String catg;
+    private int pos;
+    private ArrayAdapter<String> SpinAdapter;
     private DatabaseHelper databaseHelper;
     private int year, month, day;
-    private DatePickerDialog.OnDateSetListener myDateListener = new
+    private final DatePickerDialog.OnDateSetListener myDateListener = new
             DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker arg0,
@@ -61,8 +60,6 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
                     showDate(arg1, arg2 + 1, arg3);
                 }
             };
-
-    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -77,14 +74,14 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
         amount = findViewById(R.id.Tamount);
         notes = findViewById(R.id.Tnotes);
 
-        catSpin = findViewById(R.id.catSpinner);
+        Spinner catSpin = findViewById(R.id.catSpinner);
 
         dateBtn = findViewById(R.id.dateButton);
-        saveBtn = findViewById(R.id.saveTrans);
+        Button saveBtn = findViewById(R.id.saveTrans);
 
         //MobileAds.initialize(this, getResources().getString(R.string.ad_id));
 
-        mAdView = findViewById(R.id.adViewTrans);
+        AdView mAdView = findViewById(R.id.adViewTrans);
         AdRequest adRequest = new AdRequest.Builder()
                 //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
@@ -100,8 +97,8 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
         month = calendar.get(Calendar.MONTH)+1;
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        categories = new String[]{"Tag"};
-        ArrayList<String> lst = new ArrayList<String>(Arrays.asList(categories));
+        String[] categories = new String[]{"Select Tag"};
+        ArrayList<String> lst = new ArrayList<>(Arrays.asList(categories));
         getLoaderManager().initLoader(TAGS_LOADER, null, this).forceLoad();
 
         SpinAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item,lst)
@@ -194,6 +191,7 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
             if(o != null)
             {
                 Log.d("TAG_LOADER", "Loader finished updating spinner.");
+                //noinspection unchecked
                 data = (List<Tags>) o;
                 for (Tags d:  data)
                 {
@@ -252,7 +250,8 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
                                 .show();
                     } else {
 
-                        if (databaseHelper.newTransaction(txn_type, txn_amount, txn_category, txn_date, txn_year, txn_month, txn_notes, id)) {
+                        if (databaseHelper.newTransaction(txn_type, txn_amount, txn_category, txn_date,
+                                txn_year, txn_month, txn_notes, id)) {
                             Intent intent = new Intent(this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -274,8 +273,15 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
 
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
-    public void showDate(int y, int m, int d)
+
+    private void showDate(int y, int m, int d)
     {
         String newDateBtnTxt = "Date: "+String.valueOf(d)+"-"+String.valueOf(m)+"-"+String.valueOf(y);
         dateBtn.setText(newDateBtnTxt);

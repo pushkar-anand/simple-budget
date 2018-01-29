@@ -7,8 +7,8 @@ import android.database.Cursor;
 
 class SingleTransactionLoader extends AsyncTaskLoader
 {
-    private Integer id;
-    private DatabaseHelper databaseHelper;
+    private final Integer id;
+    private final DatabaseHelper databaseHelper;
     private  Cursor res;
 
     SingleTransactionLoader(Context context, Integer id)

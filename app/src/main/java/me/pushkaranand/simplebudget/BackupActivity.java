@@ -65,9 +65,7 @@ public class BackupActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_STORAGE = 123;
 
-    SharedPreferences sharedPreferences;
-    private GoogleSignInClient mGoogleSignInClient;
-    private DriveClient mDriveClient;
+    private SharedPreferences sharedPreferences;
     private DriveResourceClient mDriveResourceClient;
     private boolean accountConnected = false;
 
@@ -97,7 +95,7 @@ public class BackupActivity extends AppCompatActivity {
 
 
         sharedPreferences = this.getSharedPreferences(PREF, Context.MODE_PRIVATE);
-        mGoogleSignInClient = buildGoogleSignInClient();
+        GoogleSignInClient mGoogleSignInClient = buildGoogleSignInClient();
         startActivityForResult(mGoogleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
 
         b = findViewById(R.id.restoreBTN);
@@ -131,6 +129,7 @@ public class BackupActivity extends AppCompatActivity {
         mLayout = findViewById(R.id.bckCL);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -146,7 +145,7 @@ public class BackupActivity extends AppCompatActivity {
             case REQUEST_CODE_SIGN_IN:
                 if (resultCode == RESULT_OK) {
                     accountConnected = true;
-                    mDriveClient = Drive.getDriveClient(this,
+                    DriveClient mDriveClient = Drive.getDriveClient(this,
                             GoogleSignIn.getLastSignedInAccount(this));
                     mDriveResourceClient = Drive.getDriveResourceClient(this,
                             GoogleSignIn.getLastSignedInAccount(this));
@@ -192,7 +191,7 @@ public class BackupActivity extends AppCompatActivity {
                         }
 
                         OutputStream outputStream = contents.getOutputStream();
-                        int c = 0;
+                        int c;
                         byte[] buf = new byte[8192];
                         if (inputStream != null) {
 
@@ -379,7 +378,7 @@ public class BackupActivity extends AppCompatActivity {
 
                 byte[] buf = new byte[8192];
 
-                int c = 0;
+                int c;
                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                     DatabaseHelper databaseHelper = DatabaseHelper.getInstance(BackupActivity.this);
 
@@ -459,7 +458,7 @@ public class BackupActivity extends AppCompatActivity {
 
                             byte[] buf = new byte[8192];
 
-                            int c = 0;
+                            int c;
                             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                                 DatabaseHelper databaseHelper = DatabaseHelper.getInstance(BackupActivity.this);
 

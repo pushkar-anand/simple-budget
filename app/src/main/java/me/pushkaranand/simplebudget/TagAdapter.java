@@ -1,5 +1,6 @@
 package me.pushkaranand.simplebudget;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -54,7 +55,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.RecycleHolder> {
                 final DatabaseHelper db = DatabaseHelper.getInstance(view.getContext());
                 Log.d("RecyleClick TAG: ", String.valueOf(tag_id));
                 LayoutInflater li = LayoutInflater.from(view.getContext());
-                View prompt = li.inflate(R.layout.new_tag_dialog, null);
+                @SuppressLint("InflateParams") View prompt = li.inflate(R.layout.new_tag_dialog, null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                 builder.setView(prompt);
 
@@ -94,8 +95,9 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.RecycleHolder> {
     }
 
     class RecycleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView tagName, tagSpend;
-        ConstraintLayout constraintLayout;
+        final TextView tagName;
+        final TextView tagSpend;
+        final ConstraintLayout constraintLayout;
 
         RecycleHolder(View view) {
             super(view);

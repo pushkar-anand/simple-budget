@@ -47,18 +47,15 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks {
 
-    public static final String PREF = "simple-budget";
+    private static final String PREF = "simple-budget";
     private static final int REQUEST_INVITE = 0;
     private static final int ADD_TRANS = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int TRANSACTIONS_LOADER = 1;
     private static final int TAGS_LOADER = 2;
-    TextView blncView;
-    SharedPreferences sharedPreferences;
-    Double availableBalance = 00.00;
-    RecyclerView recyclerView;
-    List<Transactions> TList;
-    DatabaseHelper databaseHelper;
+    private TextView blncView;
+    private Double availableBalance = 00.00;
+    private List<Transactions> TList;
     private TransactionsAdapter transactionsAdapter;
 
     @Override
@@ -98,7 +95,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        sharedPreferences = this.getSharedPreferences(PREF, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(PREF, Context.MODE_PRIVATE);
         if (sharedPreferences.getBoolean("FIRST_RUN", true))
         {
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -112,19 +109,15 @@ public class MainActivity extends AppCompatActivity
             editor.apply();
         }
 
-        databaseHelper = DatabaseHelper.getInstance(this);
-        //availableBalance = 00.00;//databaseHelper.getAvailableBalance();
-
         blncView = findViewById(R.id.avlBlnc);
 
-        recyclerView = findViewById(R.id.TlistR);
+        RecyclerView recyclerView = findViewById(R.id.TlistR);
         TList = new ArrayList<>();
         transactionsAdapter = new TransactionsAdapter(this, TList);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        //recyclerView.hasFixedSize();
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(transactionsAdapter);
 
@@ -132,13 +125,13 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void createDefaultTags()
+    private void createDefaultTags()
     {
         DatabaseHelper db = DatabaseHelper.getInstance(this);
         db.initiateTagTable();
     }
 
-    public void updateBalance(String s)
+    private void updateBalance(String s)
     {
 
         blncView.setText(s);
@@ -177,7 +170,7 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader loader, Object o) {
         int id = loader.getId();
         if(id == TRANSACTIONS_LOADER) {
-            Pair<ArrayList<Transactions>, Double> data = (Pair<ArrayList<Transactions>, Double>) o;
+            @SuppressWarnings("unchecked") Pair<ArrayList<Transactions>, Double> data = (Pair<ArrayList<Transactions>, Double>) o;
 
             Log.d("LOADER", " LoadFinished");
 
@@ -366,9 +359,14 @@ public class MainActivity extends AppCompatActivity
         Log.d("FUNCTION : ", "Starting startRemindingService");
 
         Calendar calendar = Calendar.getInstance();
+
         calendar.set(Calendar.HOUR_OF_DAY, 21);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
+
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
 
         Intent intent = new Intent(this, AddTransactionReminder.class);
 
@@ -378,6 +376,7 @@ public class MainActivity extends AppCompatActivity
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
 
         if (alarmManager != null) {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
@@ -401,6 +400,7 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
+    @SuppressWarnings("EmptyMethod")
     private void sendUpdateNotification() {
 
     }

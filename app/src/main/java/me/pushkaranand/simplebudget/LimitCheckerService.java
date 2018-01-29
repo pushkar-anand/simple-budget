@@ -27,6 +27,7 @@ public class LimitCheckerService extends IntentService {
         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
 
         ArrayList<Integer> tagIds = databaseHelper.ListTagIds();
+        final GlobalData globalVariable = (GlobalData) getApplicationContext();
 
         for (Integer tagID : tagIds) {
             Double d;
@@ -39,9 +40,10 @@ public class LimitCheckerService extends IntentService {
             Double spend = res.getDouble(res.getColumnIndex(DatabaseHelper.TAG_COLUMN_NAME_SPEND));
             Double limit = (d != 0) ? d : null;
 
-            if (limit != null) {
+            if (limit != null && !globalVariable.isInNotifiedList(tagID)) {
                 Double percentage = (spend / limit) * 100;
                 if (percentage > 80) {
+                    globalVariable.addToNotifiedList(tagID);
                     sendNotification(name, tagID);
                 }
             }
@@ -60,7 +62,7 @@ public class LimitCheckerService extends IntentService {
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-        NotificationCompat.Builder mBuilder = null;
+        NotificationCompat.Builder mBuilder;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
             String id = "my_channel_02";

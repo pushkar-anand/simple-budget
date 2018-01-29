@@ -16,9 +16,9 @@ import java.util.List;
 
 public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapter.RecycleHolder>
 {
-    private List<Transactions> TransactionList;
     //private static RecyclerViewClickListener itemListener;
-    private Context context;
+    private final Context context;
+    private List<Transactions> TransactionList;
 
     public TransactionsAdapter(Context context, List<Transactions> TransactionList)
     {
@@ -80,15 +80,18 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
     }
 
     class RecycleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView amount, date, notes, category;
-        ConstraintLayout constraintLayout;
+        final TextView amount;
+        final TextView date;
+        final TextView category;
+        final ConstraintLayout constraintLayout;
+        TextView notes;
 
         RecycleHolder(View view) {
             super(view);
-            amount = (TextView) view.findViewById(R.id.AmountTxt);
-            date = (TextView) view.findViewById(R.id.datetxt);
+            amount = view.findViewById(R.id.AmountTxt);
+            date = view.findViewById(R.id.datetxt);
             //notes = (TextView) view.findViewById(R.id.notesTxt);
-            category = (TextView) view.findViewById(R.id.categoryTxt);
+            category = view.findViewById(R.id.categoryTxt);
             constraintLayout = view.findViewById(R.id.recycleConstraint);
         }
 

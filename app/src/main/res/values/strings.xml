@@ -36,7 +36,6 @@
 
 
     <string name="available_balance">Available Balance</string>
-    <string name="separator">separator</string>
     <string name="def_bal">00.00</string>
 
     <string name="tagline">Easily manage you savings and budgets</string>
@@ -60,8 +59,6 @@
     <!--Test unit id-->
     <!--<string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
 
-
-    <string name="ad_id">ca-app-pub-4200512046448987~9294100970</string>
 
 
     <string name="last_backup">Last Backup:&#160;&#160;</string>

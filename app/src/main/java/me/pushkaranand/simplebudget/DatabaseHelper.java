@@ -198,7 +198,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     ArrayList<Integer> ListTransactionIds() {
-        ArrayList<Integer> array_list = new ArrayList<Integer>();
+        ArrayList<Integer> array_list = new ArrayList<>();
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -215,7 +215,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public double getAvailableBalance() {
-        double Balance = 0, Credit = 0, Debit = 0;
+        double Balance, Credit = 0, Debit = 0;
 
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME;
@@ -276,7 +276,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    boolean updateTag(Integer id, String name, Double spend, @Nullable Double limit) {
+    void updateTag(Integer id, String name, Double spend, @Nullable Double limit) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -285,7 +285,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(TAG_COLUMN_NAME_LIMIT, limit);
 
         db.update(TABLE_NAME_TAG, contentValues, TAG_COLUMN_NAME_ID + " = ?", new String[]{Integer.toString(id)});
-        return true;
     }
 
     public Integer deleteTag(Integer id) {
@@ -296,7 +295,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
 
     ArrayList<Integer> ListTagIds() {
-        ArrayList<Integer> array_list = new ArrayList<Integer>();
+        ArrayList<Integer> array_list = new ArrayList<>();
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();

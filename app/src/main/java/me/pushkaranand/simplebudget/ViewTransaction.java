@@ -26,11 +26,12 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
     private static final int TRANSACTION_LOADER = 1;
     private static final int TAGS_LOADER = 2;
 
-    Integer txn_id = null;
-    List<Tags> tagsList;
-    Transactions txn;
+    private Integer txn_id = null;
+    private List<Tags> tagsList;
+    private Transactions txn;
 
-    Boolean isInEditMode = false, isLoaded = false;
+    private Boolean isInEditMode = false;
+    private Boolean isLoaded = false;
     //For view transaction
     private TextView viewAmt, viewTag, viewDate, viewNote;
 
@@ -65,9 +66,9 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
         final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener()
         {
+            @SuppressWarnings("ConstantConditions")
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 if (isLoaded) {
                     if (!isInEditMode) {
                         isInEditMode = true;
@@ -85,6 +86,7 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
         });
 
         try {
+            //noinspection ConstantConditions
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -105,14 +107,14 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
         }
     }
 
-    public void enableEditMode()
+    private void enableEditMode()
     {
         Log.d("EDIT", "Edit mode enabled");
         findViewById(R.id.viewLayout).setVisibility(View.GONE);
         findViewById(R.id.editLayout).setVisibility(View.VISIBLE);
     }
 
-    public void disableEditMode()
+    private void disableEditMode()
     {
         Log.d("EDIT", "Edit mode disabled");
         findViewById(R.id.editLayout).setVisibility(View.GONE);
@@ -166,6 +168,7 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
         }
         if(id == TAGS_LOADER)
         {
+            //noinspection unchecked
             tagsList = (List<Tags>) o;
             updateSpinners();
         }

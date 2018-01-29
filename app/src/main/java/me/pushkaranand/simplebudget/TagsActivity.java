@@ -1,5 +1,6 @@
 package me.pushkaranand.simplebudget;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.DialogInterface;
@@ -43,12 +44,9 @@ public class TagsActivity extends AppCompatActivity
     private static final int ADD_TRANS = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int TAGS_LOADER = 2;
-    RecyclerView recyclerView;
-    TagAdapter tagAdapter;
-    List<Tags> tagsList;
-    DatabaseHelper databaseHelper;
-
-    private AdView mAdView;
+    private TagAdapter tagAdapter;
+    private List<Tags> tagsList;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +57,7 @@ public class TagsActivity extends AppCompatActivity
 
         //MobileAds.initialize(this, getResources().getString(R.string.ad_id));
 
-        mAdView = findViewById(R.id.adTagAct);
+        AdView mAdView = findViewById(R.id.adTagAct);
         AdRequest adRequest = new AdRequest.Builder()
                 .build();
 
@@ -73,7 +71,7 @@ public class TagsActivity extends AppCompatActivity
                                    public void onClick(View view)
                                    {
                                        LayoutInflater li = LayoutInflater.from(TagsActivity.this);
-                                       View prompt = li.inflate(R.layout.new_tag_dialog, null);
+                                       @SuppressLint("InflateParams") View prompt = li.inflate(R.layout.new_tag_dialog, null);
 
                                        final EditText n = prompt.findViewById(R.id.tagNameEdt);
                                        final EditText l = prompt.findViewById(R.id.tagLimitEdt);
@@ -129,7 +127,7 @@ public class TagsActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        recyclerView = findViewById(R.id.rlTagView);
+        RecyclerView recyclerView = findViewById(R.id.rlTagView);
         tagsList = new ArrayList<>();
         tagAdapter = new TagAdapter(tagsList);
 
@@ -210,6 +208,7 @@ public class TagsActivity extends AppCompatActivity
         int id = loader.getId();
         if(id == TAGS_LOADER)
         {
+            //noinspection unchecked
             tagsList = (List<Tags>) o;
             tagAdapter.updateTagAdapter(tagsList);
             tagAdapter.notifyDataSetChanged();

@@ -10,7 +10,7 @@ import java.util.List;
 
 class TagLoader extends AsyncTaskLoader<List<Tags>>
 {
-    private DatabaseHelper dbHelper;
+    private final DatabaseHelper dbHelper;
     private Cursor res;
 
     TagLoader(Context context)
@@ -23,7 +23,7 @@ class TagLoader extends AsyncTaskLoader<List<Tags>>
     public List<Tags> loadInBackground()
     {
         Log.d("TaskLoader_TAGS: ", "Started working");
-        List<Tags> tagsList  = new ArrayList<Tags>();
+        List<Tags> tagsList = new ArrayList<>();
         Tags n;
 
         ArrayList<Integer> ids = dbHelper.ListTagIds();
