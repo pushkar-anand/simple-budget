@@ -177,15 +177,7 @@ public class TagsActivity extends AppCompatActivity
             Intent b = new Intent(this, BackupActivity.class);
             startActivity(b);
         } else if (id == R.id.action_reset_spend) {
-            Thread thread = new Thread() {
-                @Override
-                public void run() {
-                    DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getApplicationContext());
-                    databaseHelper.resetSpends();
-                }
-            };
-
-            thread.start();
+            new ResetSpends().execute(this);
         }
 
         return super.onOptionsItemSelected(item);

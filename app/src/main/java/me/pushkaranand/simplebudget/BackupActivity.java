@@ -516,9 +516,22 @@ public class BackupActivity extends AppCompatActivity {
     }
 
     public void resetDatabase(View view) {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Resetting");
+        progressDialog.show();
+
         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
-        databaseHelper.resetDatabase();
-        databaseHelper.initiateTagTable();
+        if (databaseHelper.resetDatabase()) {
+            databaseHelper.initiateTagTable();
+            progressDialog.dismiss();
+            Toast.makeText(this, "Reset Successful.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            progressDialog.dismiss();
+            Toast.makeText(this, "Some error occurred. Try again Later", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

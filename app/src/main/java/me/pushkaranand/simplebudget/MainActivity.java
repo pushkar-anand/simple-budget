@@ -233,16 +233,8 @@ public class MainActivity extends AppCompatActivity
             Intent b = new Intent(this, BackupActivity.class);
             startActivity(b);
         } else if (id == R.id.action_reset_spend) {
-            Thread thread = new Thread() {
-                @Override
-                public void run() {
-                    DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getApplicationContext());
-                    databaseHelper.resetSpends();
-                    Toast.makeText(MainActivity.this, "Spends have been reset", Toast.LENGTH_SHORT).show();
-                }
-            };
+            new ResetSpends().execute(this);
 
-            thread.start();
         } else if (id == R.id.action_feedback) {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 

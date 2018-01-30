@@ -82,7 +82,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    void resetDatabase() {
+    boolean resetDatabase() {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
@@ -115,6 +115,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
         Log.d("SQL_CREATE: ", createQuery);
         sqLiteDatabase.execSQL(createQuery);
+        return true;
     }
 
     @Override

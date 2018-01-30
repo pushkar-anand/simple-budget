@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 
 public class GlobalData extends Application {
-    private ArrayList<Integer> notifiedList;
+    private ArrayList<Integer> notifiedList = new ArrayList<>();
 
     public boolean isInNotifiedList(Integer x) {
         return notifiedList.contains(x);

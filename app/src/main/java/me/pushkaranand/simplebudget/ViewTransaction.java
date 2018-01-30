@@ -207,13 +207,19 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
     private void updateSpinners() {
         ArrayList<String> lst = new ArrayList<>();
 
-        for (int i = 0; i < tagsList.size(); i++) {
-            String tagName = tagsList.get(i).getTagName();
-            if (tagName.equals(txn.getTxn_category())) {
-                old = i;
+        try {
+            for (int i = 0; i < tagsList.size(); i++) {
+                String tagName = tagsList.get(i).getTagName();
+                if (tagName.equals(txn.getTxn_category())) {
+                    old = i;
+                }
+                lst.add(tagName);
             }
-            lst.add(tagName);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Some error occurred", Toast.LENGTH_SHORT).show();
         }
+
 
         ArrayAdapter<String> SpinAdapter, CrDrApadter;
 
