@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name="me.pushkaranand.simplebudget.GlobalData"
+        android:name=".GlobalData"
         android:allowBackup="true"
         android:fullBackupContent="@xml/app_backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -15,7 +15,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -30,8 +29,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingsActivity" />
+
         <activity android:name=".NewTransaction" />
+
         <activity
             android:name=".TagsActivity"
             android:label="@string/title_activity_tags"
@@ -41,6 +41,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="me.pushkaranand.simplebudget.MainActivity" />
         </activity>
+
         <activity
             android:name=".SearchActivity"
             android:label="@string/title_activity_search"
@@ -50,6 +51,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="me.pushkaranand.simplebudget.MainActivity" />
         </activity>
+
         <activity
             android:name=".ViewTransaction"
             android:label="@string/title_activity_view_transaction"
@@ -59,7 +61,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="me.pushkaranand.simplebudget.MainActivity" />
         </activity>
+
         <activity android:name=".BackupActivity" />
+
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="true"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".SettingsActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="me.pushkaranand.simplebudget.MainActivity" />
+        </activity>
 
         <service
             android:name=".AddTransactionReminder"
@@ -81,6 +95,7 @@
         <service
             android:name=".ResetSpendService"
             android:exported="false" />
+
     </application>
 
 </manifest>

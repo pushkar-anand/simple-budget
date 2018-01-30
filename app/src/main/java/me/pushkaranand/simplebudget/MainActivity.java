@@ -85,13 +85,11 @@ public class MainActivity extends AppCompatActivity
                 .build();
         mAdView.loadAd(adRequest);
 
-
-        startRemindingService();
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
+
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -117,11 +115,13 @@ public class MainActivity extends AppCompatActivity
         int MaxHeight = metrics.heightPixels;
 
         RecyclerView recyclerView = findViewById(R.id.TlistR);
+
         TList = new ArrayList<>();
         transactionsAdapter = new TransactionsAdapter(this, TList);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
+
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(transactionsAdapter);
@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setLayoutParams(params);
 
         getLoaderManager().initLoader(TRANSACTIONS_LOADER, null, this).forceLoad();
+
+        startRemindingService();
 
     }
 
@@ -176,7 +178,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader loader, Object o) {
         int id = loader.getId();
-        if(id == TRANSACTIONS_LOADER) {
+        if (id == TRANSACTIONS_LOADER) {
             @SuppressWarnings("unchecked")
             Pair<ArrayList<Transactions>, Double> data = (Pair<ArrayList<Transactions>, Double>) o;
 
@@ -220,7 +222,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -230,12 +231,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         } else if (id == R.id.action_about) {
             new LibsBuilder()
-                    //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
                     .withActivityStyle(Libs.ActivityStyle.DARK)
-                    //start the activity
                     .start(this);
         } else if (id == R.id.action_backup) {
             Intent b = new Intent(this, BackupActivity.class);
@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item)
     {
         Intent intent;
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
         if (id == R.id.nav_home)
@@ -338,7 +338,6 @@ public class MainActivity extends AppCompatActivity
 
         if (requestCode == REQUEST_INVITE) {
             if (resultCode == RESULT_OK) {
-                // Get the invitation IDs of all sent messages
                 String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
                 for (String id : ids) {
                     Log.d(TAG, "onActivityResult: sent invitation " + id);
@@ -418,7 +417,6 @@ public class MainActivity extends AppCompatActivity
         @Override
         public Pair<ArrayList<Transactions>, Double> loadInBackground()
         {
-            //super.loadInBackground();
             Double balance = 0.0;
             ArrayList<Transactions> arrayList = new ArrayList<>();
             DatabaseHelper db;
