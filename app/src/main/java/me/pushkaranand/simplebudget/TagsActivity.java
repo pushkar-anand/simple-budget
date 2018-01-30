@@ -177,7 +177,8 @@ public class TagsActivity extends AppCompatActivity
             Intent b = new Intent(this, BackupActivity.class);
             startActivity(b);
         } else if (id == R.id.action_reset_spend) {
-            new ResetSpends().execute(this);
+            Intent i = new Intent(this, ResetSpendService.class);
+            startService(i);
         }
 
         return super.onOptionsItemSelected(item);

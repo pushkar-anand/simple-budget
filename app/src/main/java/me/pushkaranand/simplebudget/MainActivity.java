@@ -233,7 +233,8 @@ public class MainActivity extends AppCompatActivity
             Intent b = new Intent(this, BackupActivity.class);
             startActivity(b);
         } else if (id == R.id.action_reset_spend) {
-            new ResetSpends().execute(this);
+            Intent i = new Intent(this, ResetSpendService.class);
+            startService(i);
 
         } else if (id == R.id.action_feedback) {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
