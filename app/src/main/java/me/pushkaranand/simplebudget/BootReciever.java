@@ -27,6 +27,10 @@ public class BootReciever extends BroadcastReceiver {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
         Intent intent = new Intent(context, AddTransactionReminder.class);
 
         PendingIntent pendingIntent = PendingIntent.getService(context,

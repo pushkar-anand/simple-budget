@@ -15,6 +15,7 @@ import android.util.Log;
 import static android.support.v4.app.NotificationCompat.DEFAULT_ALL;
 import static android.support.v4.app.NotificationCompat.PRIORITY_MAX;
 
+@SuppressWarnings("unused")
 public class AddTransactionReminder extends IntentService {
     private static final String PREF = "simple-budget";
 

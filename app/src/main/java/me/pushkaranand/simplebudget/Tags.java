@@ -1,32 +1,14 @@
 package me.pushkaranand.simplebudget;
 
 
+@SuppressWarnings("unused")
 class Tags
 {
     private Integer tagId;
     private String tagName, tagColor;
     private Double tagSpend, tagLimit;
 
-    public Integer getTagId()
-    {
-        return tagId;
-    }
-
-    public void setTagId(Integer tagId) {
-        this.tagId = tagId;
-    }
-
-    public Double getTagLimit()
-    {
-        return tagLimit;
-    }
-
-    public void setTagLimit(Double tagLimit) {
-        this.tagLimit = tagLimit;
-    }
-
-    Tags(Integer tagId, String tagName, String tagColor, Double tagSpend, Double tagLimit)
-    {
+    Tags(Integer tagId, String tagName, String tagColor, Double tagSpend, Double tagLimit) {
         this.tagId = tagId;
         this.tagName = tagName;
         this.tagColor = tagColor;
@@ -35,8 +17,7 @@ class Tags
 
     }
 
-    Tags(Integer tagId, String tagName, Double tagSpend, Double tagLimit)
-    {
+    Tags(Integer tagId, String tagName, Double tagSpend, Double tagLimit) {
         this.tagId = tagId;
         this.tagName = tagName;
         this.tagSpend = tagSpend;
@@ -44,8 +25,23 @@ class Tags
 
     }
 
-    public String getTagName()
-    {
+    public Integer getTagId() {
+        return tagId;
+    }
+
+    public void setTagId(Integer tagId) {
+        this.tagId = tagId;
+    }
+
+    public Double getTagLimit() {
+        return tagLimit;
+    }
+
+    public void setTagLimit(Double tagLimit) {
+        this.tagLimit = tagLimit;
+    }
+
+    public String getTagName() {
         return tagName;
     }
 

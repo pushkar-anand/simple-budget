@@ -9,7 +9,6 @@
     tools:showIn="@layout/app_bar_search">
 
     <TextView
-        android:id="@+id/ntAvl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Search is not available at this momemt. Will be available in future updates."

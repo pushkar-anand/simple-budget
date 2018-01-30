@@ -1,14 +1,14 @@
 package me.pushkaranand.simplebudget;
 
 
+@SuppressWarnings("unused")
 class Transactions
 {
     private Integer txn_id;
     private String txn_date, txn_category, txn_type, txn_notes;
     private Double txn_amount;
 
-    Transactions(Integer txn_id,String txn_date, String txn_category, String txn_type, String txn_notes, Double txn_amount)
-    {
+    Transactions(Integer txn_id, String txn_date, String txn_category, String txn_type, String txn_notes, Double txn_amount) {
         this.txn_id = txn_id;
         this.txn_date = txn_date;
         this.txn_category = txn_category;
@@ -17,8 +17,7 @@ class Transactions
         this.txn_amount = txn_amount;
     }
 
-    public String getTxn_date()
-    {
+    public String getTxn_date() {
         return txn_date;
     }
 

@@ -5,22 +5,21 @@ import android.content.Context;
 import android.database.Cursor;
 
 
+@SuppressWarnings("unused")
 class SingleTransactionLoader extends AsyncTaskLoader
 {
     private final Integer id;
     private final DatabaseHelper databaseHelper;
     private  Cursor res;
 
-    SingleTransactionLoader(Context context, Integer id)
-    {
+    SingleTransactionLoader(Context context, Integer id) {
         super(context);
         this.id = id;
         databaseHelper = DatabaseHelper.getInstance(context);
     }
 
     @Override
-    public Transactions loadInBackground()
-    {
+    public Transactions loadInBackground() {
         Transactions txn;
         res = databaseHelper.getData(id);
         res.moveToFirst();
@@ -41,8 +40,7 @@ class SingleTransactionLoader extends AsyncTaskLoader
         return txn;
     }
 
-    protected void onReleaseResources()
-    {
+    protected void onReleaseResources() {
         res.close();
     }
 }

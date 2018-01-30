@@ -8,20 +8,19 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 class TagLoader extends AsyncTaskLoader<List<Tags>>
 {
     private final DatabaseHelper dbHelper;
     private Cursor res;
 
-    TagLoader(Context context)
-    {
+    TagLoader(Context context) {
         super(context);
         dbHelper = DatabaseHelper.getInstance(getContext());
     }
 
     @Override
-    public List<Tags> loadInBackground()
-    {
+    public List<Tags> loadInBackground() {
         Log.d("TaskLoader_TAGS: ", "Started working");
         List<Tags> tagsList = new ArrayList<>();
         Tags n;

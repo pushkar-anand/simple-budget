@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 
+@SuppressWarnings("unused")
 class DatabaseHelper extends SQLiteOpenHelper {
     static final String DATABASE_NAME = "simple-budget.db";
     private static final int DATABASE_VERSION = 1;
@@ -129,8 +130,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
     //transaction related
 
-    boolean newTransaction(String type, Double amount, String category, String date, Integer year, String month, @Nullable String notes, Integer tag_id)
-    {
+    boolean newTransaction(String type, Double amount, String category, String date, Integer year, String month, @Nullable String notes, Integer tag_id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();

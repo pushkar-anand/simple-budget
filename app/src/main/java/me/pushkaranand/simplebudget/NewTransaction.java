@@ -36,11 +36,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("unused")
 public class NewTransaction extends AppCompatActivity implements LoaderManager.LoaderCallbacks
 {
     private static final int TAGS_LOADER = 2;
-    RadioButton cr, dr;
     private RadioGroup crDr;
     private EditText amount;
     private EditText notes;
@@ -78,9 +77,7 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
         Spinner catSpin = findViewById(R.id.catSpinner);
 
         dateBtn = findViewById(R.id.dateButton);
-        Button saveBtn = findViewById(R.id.saveTrans);
 
-        //MobileAds.initialize(this, getResources().getString(R.string.ad_id));
 
         AdView mAdView = findViewById(R.id.adViewTrans);
         AdRequest adRequest = new AdRequest.Builder()
@@ -243,7 +240,8 @@ public class NewTransaction extends AppCompatActivity implements LoaderManager.L
                     Double limit = databaseHelper.getTagLimit(id);
 
 
-                    if (currSpend + txn_amount >= limit && limit != 0 && Objects.equals(txn_type, "DEBIT"))
+                    //noinspection ConstantConditions
+                    if (currSpend + txn_amount >= limit && (limit != 0 || limit < 0) && Objects.equals(txn_type, "DEBIT"))
                     {
                         Toast.makeText(this,
                                 "You are exceeding the limit for " + txn_category,

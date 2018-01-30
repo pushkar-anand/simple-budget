@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks {
 
@@ -61,8 +62,7 @@ public class MainActivity extends AppCompatActivity
     private TransactionsAdapter transactionsAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -96,8 +96,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         SharedPreferences sharedPreferences = this.getSharedPreferences(PREF, Context.MODE_PRIVATE);
-        if (sharedPreferences.getBoolean("FIRST_RUN", true))
-        {
+        if (sharedPreferences.getBoolean("FIRST_RUN", true)) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("FIRST_RUN", false);
             editor.putInt("RESET_DATE", 1);
@@ -136,39 +135,24 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void createDefaultTags()
-    {
+    private void createDefaultTags() {
         DatabaseHelper db = DatabaseHelper.getInstance(this);
         db.initiateTagTable();
     }
 
-    private void updateBalance(String s)
-    {
+    private void updateBalance(String s) {
 
         blncView.setText(s);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public Loader onCreateLoader(int id, Bundle args)
-    {
-        if (id == TRANSACTIONS_LOADER)
-        {
+    public Loader onCreateLoader(int id, Bundle args) {
+        if (id == TRANSACTIONS_LOADER) {
             Log.e("TEST", "Create Transaction Loader ");
             return new PrepareData(this);
 
         }
-        if(id == TAGS_LOADER)
-        {
+        if(id == TAGS_LOADER) {
             return new TagLoader(this);
         }
         return null;
@@ -205,8 +189,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoaderReset(Loader loader)
-    {
+    public void onLoaderReset(Loader loader) {
         //setListAdapter(null);
     }
 
@@ -291,33 +274,26 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item)
-    {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
 
         int id = item.getItemId();
 
-        if (id == R.id.nav_home)
-        {
+        if (id == R.id.nav_home) {
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
-        } else if (id == R.id.nav_search)
-        {
+        } else if (id == R.id.nav_search) {
             Intent i = new Intent(this, SearchActivity.class);
             startActivity(i);
-        }
-        else if (id == R.id.nav_tags)
-        {
+        } else if (id == R.id.nav_tags) {
             Intent i = new Intent(this, TagsActivity.class);
             startActivity(i);
 
-        } else if (id == R.id.nav_settings)
-        {
+        } else if (id == R.id.nav_settings) {
             intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_share)
-        {
+        } else if (id == R.id.nav_share) {
             Intent i = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
                     .setMessage(getString(R.string.invitation_message))
                     .setDeepLink(Uri.parse(getString(R.string.app_playstore_link)))
@@ -405,6 +381,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @SuppressWarnings("unused")
     private static class PrepareData extends AsyncTaskLoader<Pair<ArrayList<Transactions>, Double>> {
         ArrayList<Integer> ids;
         Cursor res;
@@ -415,8 +392,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public Pair<ArrayList<Transactions>, Double> loadInBackground()
-        {
+        public Pair<ArrayList<Transactions>, Double> loadInBackground() {
             Double balance = 0.0;
             ArrayList<Transactions> arrayList = new ArrayList<>();
             DatabaseHelper db;
@@ -425,8 +401,7 @@ public class MainActivity extends AppCompatActivity
             ids = db.ListTransactionIds();
             Log.d("TRANSACTIONS: ", String.valueOf(ids.size()));
 
-            for (Integer id : ids)
-            {
+            for (Integer id : ids) {
                 res = db.getData(id);
                 res.moveToFirst();
 

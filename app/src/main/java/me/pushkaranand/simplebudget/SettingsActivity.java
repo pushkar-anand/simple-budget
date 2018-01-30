@@ -22,6 +22,7 @@ import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
+@SuppressWarnings("unused")
 public class SettingsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final int REQUEST_INVITE = 0;

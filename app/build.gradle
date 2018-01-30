@@ -6,8 +6,8 @@ android {
         applicationId "me.pushkaranand.simplebudget"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 24
-        versionName "2.9.3"
+        versionCode 25
+        versionName "2.9.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -79,6 +79,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
         this.TransactionList = TransactionList;
     }
 
+    @SuppressWarnings("unused")
     class RecycleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView amount;
         final TextView date;

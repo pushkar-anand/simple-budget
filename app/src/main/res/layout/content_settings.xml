@@ -9,7 +9,6 @@
     tools:showIn="@layout/app_bar_settings">
 
     <TextView
-        android:id="@+id/ntAvl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No settings are available at this momemt."
