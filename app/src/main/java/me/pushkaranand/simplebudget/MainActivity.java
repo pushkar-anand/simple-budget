@@ -26,11 +26,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,8 +55,8 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int TRANSACTIONS_LOADER = 1;
     private static final int TAGS_LOADER = 2;
+
     private TextView blncView;
-    private Double availableBalance = 00.00;
     private List<Transactions> TList;
     private TransactionsAdapter transactionsAdapter;
 
@@ -111,6 +113,9 @@ public class MainActivity extends AppCompatActivity
 
         blncView = findViewById(R.id.avlBlnc);
 
+        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+        int MaxHeight = metrics.heightPixels;
+
         RecyclerView recyclerView = findViewById(R.id.TlistR);
         TList = new ArrayList<>();
         transactionsAdapter = new TransactionsAdapter(this, TList);
@@ -120,6 +125,10 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(transactionsAdapter);
+
+        ViewGroup.LayoutParams params = recyclerView.getLayoutParams();
+        params.height = MaxHeight / 2;
+        recyclerView.setLayoutParams(params);
 
         getLoaderManager().initLoader(TRANSACTIONS_LOADER, null, this).forceLoad();
 
@@ -140,13 +149,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        availableBalance = 00.00;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        availableBalance = 00.00;
     }
 
     @Override
@@ -170,7 +177,8 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader loader, Object o) {
         int id = loader.getId();
         if(id == TRANSACTIONS_LOADER) {
-            @SuppressWarnings("unchecked") Pair<ArrayList<Transactions>, Double> data = (Pair<ArrayList<Transactions>, Double>) o;
+            @SuppressWarnings("unchecked")
+            Pair<ArrayList<Transactions>, Double> data = (Pair<ArrayList<Transactions>, Double>) o;
 
             Log.d("LOADER", " LoadFinished");
 

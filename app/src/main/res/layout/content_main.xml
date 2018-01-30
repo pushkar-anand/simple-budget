@@ -45,8 +45,7 @@
         android:id="@+id/TlistR"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp">
+        android:paddingTop="15dp">
 
     </android.support.v7.widget.RecyclerView>
 
