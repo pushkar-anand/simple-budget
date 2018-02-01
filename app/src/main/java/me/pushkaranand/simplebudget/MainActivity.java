@@ -372,6 +372,7 @@ public class MainActivity extends AppCompatActivity
         return toSort;
     }
 
+    @SuppressWarnings("SameReturnValue")
     private boolean isUpdateAvailable() {
         return false;
     }

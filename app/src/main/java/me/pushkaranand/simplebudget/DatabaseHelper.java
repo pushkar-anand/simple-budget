@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "SameReturnValue"})
 class DatabaseHelper extends SQLiteOpenHelper {
     static final String DATABASE_NAME = "simple-budget.db";
     private static final int DATABASE_VERSION = 1;
@@ -152,6 +152,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+
     Cursor getData(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_NAME_ID + "=" + id + "";
@@ -192,10 +193,32 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public Integer deleteTransaction(Integer id) {
-
+    Integer deleteTransaction(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, COLUMN_NAME_ID + " = ?", new String[]{Integer.toString(id)});
+        Integer n;
+
+        Cursor cursor = getData(id);
+        cursor.moveToFirst();
+        String tName = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_CATEGORY));
+        Double amt = cursor.getDouble(cursor.getColumnIndex(COLUMN_NAME_AMOUNT));
+        String type = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_TYPE));
+
+        cursor.close();
+
+        n = db.delete(TABLE_NAME, COLUMN_NAME_ID + " = ?", new String[]{Integer.toString(id)});
+
+        if (Objects.equals(type, "DEBIT")) {
+
+            String query = "SELECT * FROM " + TABLE_NAME_TAG + " WHERE " + TAG_COLUMN_NAME_NAME + "=\"" + tName + "\"";
+
+            cursor = db.rawQuery(query, null);
+            cursor.moveToFirst();
+            Integer ix = cursor.getInt(cursor.getColumnIndex(TAG_COLUMN_NAME_ID));
+            updateTagSpend(ix, -amt);
+            cursor.close();
+        }
+
+        return n;
     }
 
     ArrayList<Integer> ListTransactionIds() {
@@ -329,7 +352,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
         return limit;
     }
 
-    private void updateTagSpend(Integer tag_id, Double new_spend) {
+    void updateTagSpend(Integer tag_id, Double new_spend) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TAG_COLUMN_NAME_SPEND, new_spend + getTagSpend(tag_id));

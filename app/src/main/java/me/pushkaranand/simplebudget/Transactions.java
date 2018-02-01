@@ -1,6 +1,5 @@
 package me.pushkaranand.simplebudget;
 
-
 @SuppressWarnings("unused")
 class Transactions
 {
@@ -64,4 +63,5 @@ class Transactions
     public void setTxn_amount(Double txn_amount) {
         this.txn_amount = txn_amount;
     }
+
 }
