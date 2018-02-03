@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Simple Budget</string>
 
     <string name="invitation_title">Send App Invitation</string>
@@ -6,6 +6,10 @@
     <string name="invitation_cta">Install!</string>
     <string name="app_playstore_link">https://play.google.com/store/apps/details?id=me.pushkaranand.simplebudget</string>
     <string name="appID">me.pushkaranand.simplebudget</string>
+
+    <string name="aboutLibraries_description_showIcon" tools:keep="@string/aboutLibraries_description_showIcon">true</string>
+    <string name="aboutLibraries_description_showVersion" tools:keep="@string/aboutLibraries_description_showVersion">true</string>
+    <string name="aboutLibraries_description_text" tools:keep="@string/aboutLibraries_description_text">Easily manage all your money. Track your spends and earnings. Tag you transactions. Add transaction specific notes.</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -58,5 +62,6 @@
     <string name="last_backup">Last Backup:&#160;&#160;</string>
     <string name="backup_screen_info">Backup and restore transactions from google drive.\n Backing up on google drive allows to move data between devices.</string>
     <string name="reset">Reset</string>
+    <string name="signed_in_as">Signed in as: Not signed in</string>
 
 </resources>

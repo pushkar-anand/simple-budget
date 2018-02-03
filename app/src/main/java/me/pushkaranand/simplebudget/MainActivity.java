@@ -409,6 +409,7 @@ public class MainActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
 
+                    assert d2 != null;
                     returnVal = d2.compareTo(d1);
                     return returnVal;
                 }

@@ -68,7 +68,7 @@ public class BackupActivity extends AppCompatActivity {
     private DriveResourceClient mDriveResourceClient;
     private boolean accountConnected = false;
 
-    private TextView textView;
+    private TextView textView, acView;
 
     private Button b;
 
@@ -91,6 +91,8 @@ public class BackupActivity extends AppCompatActivity {
             }
 
         }
+
+        acView = findViewById(R.id.AccountTxt);
 
 
         sharedPreferences = this.getSharedPreferences(PREF, Context.MODE_PRIVATE);
@@ -148,6 +150,11 @@ public class BackupActivity extends AppCompatActivity {
                             GoogleSignIn.getLastSignedInAccount(this));
                     mDriveResourceClient = Drive.getDriveResourceClient(this,
                             GoogleSignIn.getLastSignedInAccount(this));
+
+                    String accntId = GoogleSignIn.getLastSignedInAccount(this).getEmail();
+                    String disp = "Signed in as: " + accntId;
+
+                    acView.setText(disp);
                 }
 
             default:
@@ -520,7 +527,7 @@ public class BackupActivity extends AppCompatActivity {
         if (databaseHelper.resetDatabase()) {
             databaseHelper.initiateTagTable();
             progressDialog.dismiss();
-            Toast.makeText(this, "Reset Successful.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Reset Successful.", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
