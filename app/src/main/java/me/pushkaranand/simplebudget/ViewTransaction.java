@@ -247,29 +247,38 @@ public class ViewTransaction extends AppCompatActivity implements LoaderManager.
     }
 
     private void saveUpdatedData() {
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
+        try {
+            DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
 
-        String type = editCrDr.getSelectedItem().toString();
+            String type = editCrDr.getSelectedItem().toString();
 
-        String tag = editTag.getSelectedItem().toString();
-        String old_tag = txn.getTxn_category();
-        String tag_id = String.valueOf(editTag.getSelectedItemId() + 1);
-        Integer old_tag_id = old + 1;
+            String tag = editTag.getSelectedItem().toString();
+            String old_tag = txn.getTxn_category();
+            String tag_id = String.valueOf(editTag.getSelectedItemId() + 1);
+            Integer old_tag_id = old + 1;
 
-        Double amount = Double.valueOf(editAmt.getText().toString());
-        Double old_amount = txn.getTxn_amount();
+            Double amount = Double.valueOf(editAmt.getText().toString());
+            Double old_amount = txn.getTxn_amount();
 
-        String note = editNote.getText().toString();
+            String note = editNote.getText().toString();
 
-        String date = editDate.getText().toString();
+            String date = editDate.getText().toString();
 
-        String[] arr = date.split("-");
+            String[] arr = date.split("-");
 
-        Log.d("DATE: ", Arrays.toString(arr));
+            Log.d("DATE: ", Arrays.toString(arr));
 
-        Integer year = Integer.valueOf(arr[2]);
-        String month = arr[1];
+            Integer year = Integer.valueOf(arr[2]);
+            String month = arr[1];
 
-        databaseHelper.updateTransaction(txn_id, type, amount, tag, date, year, month, note, old_tag, old_amount, Integer.valueOf(tag_id), old_tag_id);
+            databaseHelper.updateTransaction(txn_id, type, amount, tag, date, year, month, note,
+                    old_tag, old_amount, Integer.valueOf(tag_id), old_tag_id);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Invalid Input", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Some error occurred", Toast.LENGTH_SHORT).show();
+        }
     }
 }

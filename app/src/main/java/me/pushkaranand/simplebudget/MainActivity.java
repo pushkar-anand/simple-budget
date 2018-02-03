@@ -42,9 +42,15 @@ import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity
@@ -369,8 +375,50 @@ public class MainActivity extends AppCompatActivity
     }
 
     private ArrayList<Transactions> sortTransactionByDate(ArrayList<Transactions> toSort) {
+        Log.d("SORT ", "in sortTransactionByDateCall");
+        Collections.sort(toSort, new Comparator<Transactions>() {
+            int returnVal;
+
+            @Override
+            public int compare(Transactions t1, Transactions t2) {
+                Log.d("SORT ", "comparing " + t1.getTxn_id() + " & " + t2.getTxn_id());
+                String ds1, ds2;
+
+                Date d1 = null, d2 = null;
+
+                ds1 = t1.getTxn_date();
+                ds2 = t2.getTxn_date();
+
+                Log.d("SORT ", "dates " + ds1 + " & " + ds2);
+
+                if (ds1.equals(ds2)) {
+                    Log.d("SORT ", "ds1 and ds2 are equal");
+                    returnVal = t2.getTxn_id().compareTo(t1.getTxn_id());
+                    return returnVal;
+                } else {
+                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+
+                    try {
+                        d1 = format.parse(ds1);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        d2 = format.parse(ds2);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    returnVal = d2.compareTo(d1);
+                    return returnVal;
+                }
+            }
+        });
+
+
         return toSort;
     }
+
 
     @SuppressWarnings("SameReturnValue")
     private boolean isUpdateAvailable() {
