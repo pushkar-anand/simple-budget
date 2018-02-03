@@ -44,7 +44,7 @@
         android:id="@+id/rlTagView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingTop="15dp"
+        android:paddingTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -63,10 +63,10 @@
         ads:adUnitId="@string/banner_ad_unit_id"
         ads:layout_constraintBottom_toBottomOf="parent"
         ads:layout_constraintEnd_toEndOf="parent"
-        ads:layout_constraintHorizontal_bias="0.571"
+        ads:layout_constraintHorizontal_bias="0.0"
         ads:layout_constraintStart_toStartOf="parent"
         ads:layout_constraintTop_toTopOf="parent"
-        ads:layout_constraintVertical_bias="0.592" />
+        ads:layout_constraintVertical_bias="0.763" />
 
 
 </android.support.constraint.ConstraintLayout>
