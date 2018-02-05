@@ -37,8 +37,14 @@
     <string name="save">Save</string>
 
 
+    <!--For rupee symbol-->
+    <string name="Rs">\u20B9</string>
+    <!--For Rs text-->
+    <string name="rs">\u20A8</string>
+
+
     <string name="available_balance">Available Balance</string>
-    <string name="def_bal">00.00</string>
+    <string name="def_bal">\u20B900.00</string>
 
     <string name="tagline">Easily manage you savings and budgets</string>
 

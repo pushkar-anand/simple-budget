@@ -142,8 +142,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void updateBalance(String s) {
+        String txt = getString(R.string.Rs) + s;
 
-        blncView.setText(s);
+        blncView.setText(txt);
     }
 
     @Override
