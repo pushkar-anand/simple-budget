@@ -1,7 +1,5 @@
 package me.pushkaranand.simplebudget;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,8 +19,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.appinvite.AppInviteInvitation;
-import com.mikepenz.aboutlibraries.Libs;
-import com.mikepenz.aboutlibraries.LibsBuilder;
 
 public class SearchActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -74,45 +70,19 @@ public class SearchActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.action_about) {
-            new LibsBuilder()
-                    //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
-                    .withActivityStyle(Libs.ActivityStyle.DARK)
-                    //start the activity
-                    .start(this);
-        } else if (id == R.id.action_backup) {
-            Intent b = new Intent(this, BackupActivity.class);
-            startActivity(b);
-        } else if (id == R.id.action_reset_spend) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Reset Spends")
-                    .setMessage("Do you want to reset this months spends??")
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            Intent x = new Intent(SearchActivity.this, ResetSpendService.class);
-                            startService(x);
-                        }
-                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            });
+            MenuFunctions.openSettingsActivity(this);
 
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
+        } else if (id == R.id.action_about) {
+            MenuFunctions.openAboutActivity(this);
+        } else if (id == R.id.action_backup) {
+            MenuFunctions.openBackupActivity(this);
+
+        } else if (id == R.id.action_reset_spend) {
+            MenuFunctions.resetSpendsDialog(this);
         }
 
         return super.onOptionsItemSelected(item);

@@ -1,13 +1,10 @@
 package me.pushkaranand.simplebudget;
 
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
-import android.content.ActivityNotFoundException;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -39,8 +36,6 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.appinvite.AppInviteInvitation;
-import com.mikepenz.aboutlibraries.Libs;
-import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -186,11 +181,6 @@ public class MainActivity extends AppCompatActivity
                 Log.e("LOADER_DATA ", "NULL OR EMPTY");
             }
         }
-        if(id == TAGS_LOADER) {
-
-
-        }
-
         sendAlertIfRequired();
     }
 
@@ -220,83 +210,23 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.action_about) {
-            new LibsBuilder()
-                    .withActivityStyle(Libs.ActivityStyle.DARK)
-                    .start(this);
-        } else if (id == R.id.action_backup) {
-            Intent b = new Intent(this, BackupActivity.class);
-            startActivity(b);
-        } else if (id == R.id.action_reset_spend) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Reset Spends")
-                    .setMessage("Do you want to reset this months spends??")
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            Intent x = new Intent(MainActivity.this, ResetSpendService.class);
-                            startService(x);
-                        }
-                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            });
+            MenuFunctions.openSettingsActivity(this);
 
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
+        } else if (id == R.id.action_about) {
+            MenuFunctions.openAboutActivity(this);
+        } else if (id == R.id.action_backup) {
+            MenuFunctions.openBackupActivity(this);
+
+        } else if (id == R.id.action_reset_spend) {
+            MenuFunctions.resetSpendsDialog(this);
 
         } else if (id == R.id.action_feedback) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            builder.setCancelable(false)
-                    .setTitle("Feedback")
-                    .setMessage("Are you satisfied with this app??")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            Toast.makeText(MainActivity.this, "Please rate this application with 5 stars",
-                                    Toast.LENGTH_LONG).show();
-                            try {
-                                startActivity(new Intent(Intent.ACTION_VIEW,
-                                        Uri.parse("market://details?id=" + getResources().getString(R.string.appID))));
-                            } catch (ActivityNotFoundException e) {
-                                e.printStackTrace();
-                                startActivity(new Intent(Intent.ACTION_VIEW,
-                                        Uri.parse(getResources().getString(R.string.app_playstore_link))));
-                            }
-
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            Intent Email = new Intent(Intent.ACTION_SEND);
-                            Email.setType("text/email");
-                            Email.putExtra(Intent.EXTRA_EMAIL, new String[]{"anandpushkar088@gmail.com"});
-                            Email.putExtra(Intent.EXTRA_SUBJECT, "Feedback for app Simple Budget");
-                            Email.putExtra(Intent.EXTRA_TEXT, "Dear ...," + "");
-                            startActivity(Intent.createChooser(Email, "Send Feedback:"));
-                        }
-                    });
-
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
-
-
+            MenuFunctions.getFeedback(this);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
