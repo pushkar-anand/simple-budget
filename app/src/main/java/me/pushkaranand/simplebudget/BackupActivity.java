@@ -151,7 +151,7 @@ public class BackupActivity extends AppCompatActivity {
                     mDriveResourceClient = Drive.getDriveResourceClient(this,
                             GoogleSignIn.getLastSignedInAccount(this));
 
-                    String accntId = GoogleSignIn.getLastSignedInAccount(this).getEmail();
+                    String accntId = GoogleSignIn.getLastSignedInAccount(this).getDisplayName();
                     String disp = "Signed in as: " + accntId;
 
                     acView.setText(disp);
@@ -235,7 +235,7 @@ public class BackupActivity extends AppCompatActivity {
 
                         Log.d("DRIVE_FILE", driveFileId);
 
-                        String d = getString(R.string.last_backup) + dateTime;
+                        String d = getString(R.string.last_backup) + "Just Now";
                         b.setEnabled(true);
 
                         textView.setText(d);
@@ -282,8 +282,6 @@ public class BackupActivity extends AppCompatActivity {
                 }
             }
         }
-        EXTERNAL_WRITE_PERMISSION = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (EXTERNAL_WRITE_PERMISSION == PackageManager.PERMISSION_GRANTED) {
             Log.d("RESTORE: ", "Started restore");
 
             if (sharedPreferences.contains("dbBackupDriveFileID") && sharedPreferences.contains("lastDbBackupTime")) {
@@ -350,14 +348,6 @@ public class BackupActivity extends AppCompatActivity {
             } else {
                 searchDriveAndRestore();
             }
-        } else {
-            Toast.makeText(this, "Storage permission is required to restore database", Toast.LENGTH_SHORT).show();
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    PERMISSION_REQUEST_STORAGE);
-            Toast.makeText(this, "Please allow storage permission", Toast.LENGTH_LONG).show();
-        }
-
     }
 
     private void restoreWithDriveIdFromPref() {
@@ -401,7 +391,10 @@ public class BackupActivity extends AppCompatActivity {
                     }
                     outputStream.close();
                     progressDialog.dismiss();
-                    Toast.makeText(BackupActivity.this, "Restore Successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BackupActivity.this, "Restore Successful", Toast.LENGTH_LONG).show();
+                    Intent x = new Intent(BackupActivity.this, MainActivity.class);
+                    startActivity(x);
+                    finish();
                 } else {
                     progressDialog.dismiss();
                     Toast.makeText(BackupActivity.this, "Some error occurred", Toast.LENGTH_SHORT).show();
@@ -424,6 +417,10 @@ public class BackupActivity extends AppCompatActivity {
     }
 
     private void searchDriveAndRestore() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Restoring");
+        progressDialog.show();
+
         final Query query = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.TITLE, DatabaseHelper.DATABASE_NAME))
                 .build();
@@ -482,8 +479,13 @@ public class BackupActivity extends AppCompatActivity {
                                     outputStream.flush();
                                 }
                                 outputStream.close();
-                                Toast.makeText(BackupActivity.this, "Restore Successful", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                                Toast.makeText(BackupActivity.this, "Restore Successful", Toast.LENGTH_LONG).show();
+                                Intent x = new Intent(BackupActivity.this, MainActivity.class);
+                                startActivity(x);
+                                finish();
                             } else {
+                                progressDialog.dismiss();
                                 Toast.makeText(BackupActivity.this, "Some error occurred", Toast.LENGTH_SHORT).show();
                                 Log.d("RESTORE: ", "External DIR not mounted");
                             }
@@ -493,6 +495,7 @@ public class BackupActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
                             Toast.makeText(BackupActivity.this, "Some error occurred", Toast.LENGTH_SHORT).show();
                             Log.d("RESTORE: ", "Failed");
 
@@ -505,7 +508,7 @@ public class BackupActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                progressDialog.dismiss();
             }
         });
     }
