@@ -1,5 +1,7 @@
 package me.pushkaranand.simplebudget;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -91,8 +93,26 @@ public class SearchActivity extends AppCompatActivity
             Intent b = new Intent(this, BackupActivity.class);
             startActivity(b);
         } else if (id == R.id.action_reset_spend) {
-            Intent i = new Intent(this, ResetSpendService.class);
-            startService(i);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Reset Spends")
+                    .setMessage("Do you want to reset this months spends??")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            Intent x = new Intent(SearchActivity.this, ResetSpendService.class);
+                            startService(x);
+                        }
+                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         }
 
         return super.onOptionsItemSelected(item);
