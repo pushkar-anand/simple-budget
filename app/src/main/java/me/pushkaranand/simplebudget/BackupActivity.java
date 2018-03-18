@@ -1,8 +1,10 @@
 package me.pushkaranand.simplebudget;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -521,23 +523,43 @@ public class BackupActivity extends AppCompatActivity {
         return GoogleSignIn.getClient(this, signInOptions);
     }
 
-    public void resetDatabase(View view) {
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Resetting");
-        progressDialog.show();
+    public void resetDatabase(View view)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Reset Everything")
+                .setMessage("Are you sure you want to reset")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        dialogInterface.dismiss();
+                        ProgressDialog progressDialog = new ProgressDialog(BackupActivity.this);
+                        progressDialog.setMessage("Resetting");
+                        progressDialog.show();
 
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
-        if (databaseHelper.resetDatabase()) {
-            databaseHelper.initiateTagTable();
-            progressDialog.dismiss();
-            Toast.makeText(this, "Reset Successful.", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            progressDialog.dismiss();
-            Toast.makeText(this, "Some error occurred. Try again Later", Toast.LENGTH_SHORT).show();
-        }
+                        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(BackupActivity.this);
+                        if (databaseHelper.resetDatabase()) {
+                            databaseHelper.initiateTagTable();
+                            progressDialog.dismiss();
+                            Toast.makeText(BackupActivity.this, "Reset Successful.", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(BackupActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(BackupActivity.this, "Some error occurred. Try again Later", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 }
