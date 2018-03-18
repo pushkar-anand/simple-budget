@@ -27,10 +27,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import com.facebook.ads.AdSettings;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class TagsActivity extends AppCompatActivity
     private TagAdapter tagAdapter;
     private List<Tags> tagsList;
     private DatabaseHelper databaseHelper;
+    private AdView FbAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +56,13 @@ public class TagsActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //MobileAds.initialize(this, getResources().getString(R.string.ad_id));
-
-        AdView mAdView = findViewById(R.id.adTagAct);
-        AdRequest adRequest = new AdRequest.Builder()
-                .build();
-
-        mAdView.loadAd(adRequest);
+        FbAdView = new AdView(this, getString(R.string.fb_ad_placement_id), AdSize.BANNER_HEIGHT_50);
+        LinearLayout adContainer = findViewById(R.id.banner_container);
+        if (Helpers.isDebug()) {
+            AdSettings.addTestDevice("f753eb1d-3f55-4f35-b7a3-dcf5e9a841f8");
+        }
+        adContainer.addView(FbAdView);
+        FbAdView.loadAd();
 
         databaseHelper = DatabaseHelper.getInstance(this);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -136,6 +139,14 @@ public class TagsActivity extends AppCompatActivity
         recyclerView.setAdapter(tagAdapter);
 
         getLoaderManager().initLoader(TAGS_LOADER, null, this).forceLoad();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (FbAdView != null) {
+            FbAdView.destroy();
+        }
+        super.onDestroy();
     }
 
     @Override

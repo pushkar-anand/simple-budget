@@ -1,8 +1,6 @@
 package me.pushkaranand.simplebudget;
 
-import android.app.AlarmManager;
 import android.app.LoaderManager;
-import android.app.PendingIntent;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
@@ -30,17 +28,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import com.facebook.ads.AdSettings;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -51,7 +50,6 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks {
 
-    private static final String PREF = "simple-budget";
     private static final int REQUEST_INVITE = 0;
     private static final int ADD_TRANS = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -61,6 +59,8 @@ public class MainActivity extends AppCompatActivity
     private TextView blncView;
     private List<Transactions> TList;
     private TransactionsAdapter transactionsAdapter;
+
+    private AdView FbAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +81,19 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        AdView mAdView = findViewById(R.id.adViewMain);
-        AdRequest adRequest = new AdRequest.Builder()
+        FbAdView = new AdView(this, getString(R.string.fb_ad_placement_id), AdSize.BANNER_HEIGHT_50);
+        LinearLayout adContainer = findViewById(R.id.banner_container);
+        if (Helpers.isDebug()) {
+            AdSettings.addTestDevice("f753eb1d-3f55-4f35-b7a3-dcf5e9a841f8");
+        }
+        adContainer.addView(FbAdView);
+        FbAdView.loadAd();
+
+
+        //AdView mAdView = findViewById(R.id.adViewMain);
+        /*AdRequest adRequest = new AdRequest.Builder()
                 .build();
-        mAdView.loadAd(adRequest);
+        mAdView.loadAd(adRequest);*/
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -96,16 +105,23 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        SharedPreferences sharedPreferences = this.getSharedPreferences(PREF, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(Helpers.PREF, Context.MODE_PRIVATE);
         if (sharedPreferences.getBoolean("FIRST_RUN", true)) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("FIRST_RUN", false);
             editor.putInt("RESET_DATE", 1);
+            editor.putInt("DAILY_REMINDER_HOUR", 21);
+            editor.putInt("DAILY_REMINDER_MIN", 0);
             editor.apply();
             createDefaultTags();
         } else if (!sharedPreferences.contains("RESET_DATE")) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt("RESET_DATE", 1);
+            editor.apply();
+        } else if (!sharedPreferences.contains("DAILY_REMINDER_HOUR") || !sharedPreferences.contains("DAILY_REMINDER_MIN")) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt("DAILY_REMINDER_HOUR", 20);
+            editor.putInt("DAILY_REMINDER_MIN", 0);
             editor.apply();
         }
 
@@ -132,8 +148,16 @@ public class MainActivity extends AppCompatActivity
 
         getLoaderManager().initLoader(TRANSACTIONS_LOADER, null, this).forceLoad();
 
-        startRemindingService();
+        Helpers.setDailyReminderAlarm(this);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (FbAdView != null) {
+            FbAdView.destroy();
+        }
+        super.onDestroy();
     }
 
     private void createDefaultTags() {
@@ -150,7 +174,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
         if (id == TRANSACTIONS_LOADER) {
-            Log.e("TEST", "Create Transaction Loader ");
+            Log.d("TEST", "Create Transaction Loader ");
             return new PrepareData(this);
 
         }
@@ -286,37 +310,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void startRemindingService() {
-        Log.d("FUNCTION : ", "Starting startRemindingService");
-
-        Calendar calendar = Calendar.getInstance();
-
-        calendar.set(Calendar.HOUR_OF_DAY, 21);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-
-        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_YEAR, 1);
-        }
-
-        Intent intent = new Intent(this, AddTransactionReminder.class);
-
-        PendingIntent pendingIntent = PendingIntent.getService(this,
-                1,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-
-        if (alarmManager != null) {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY, pendingIntent);
-        } else {
-            Log.e("NotifyAlarm", "alarmMngr is null");
-        }
-    }
 
     private void sendAlertIfRequired() {
         Intent intent = new Intent(this, LimitCheckerService.class);

@@ -29,12 +29,12 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:27.1.0'
 
     implementation 'com.google.android.gms:play-services-drive:11.8.0'
+    implementation 'com.google.android.gms:play-services-ads:11.8.0'
     implementation 'com.google.android.gms:play-services-auth:11.8.0'
 
     implementation 'com.google.firebase:firebase-core:11.8.0'
     implementation 'com.google.firebase:firebase-crash:11.8.0'
     implementation 'com.google.firebase:firebase-invites:11.8.0'
-    implementation 'com.google.firebase:firebase-ads:11.8.0'
     implementation 'com.google.firebase:firebase-perf:11.8.0'
 
     implementation 'com.facebook.android:audience-network-sdk:4.28.0'

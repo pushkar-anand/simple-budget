@@ -70,4 +70,6 @@
     <string name="reset">Reset</string>
     <string name="signed_in_as">Signed in as: Not signed in</string>
 
+    <string name="fb_ad_placement_id">140258926665643_153169535374582</string>
+
 </resources>
